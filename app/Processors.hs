@@ -19,8 +19,8 @@ permutateRows :: Matrix -> Vector -> Bool -> (Matrix, Vector)
 permutateRows matrix vector isTransponated = 
     let
         targetIndex = map getMaxIndex matrix
-        hasDuplicates = any (== -1) targetIndex
-        allUnique = length (nub targetIndex) == (length matrix)
+        hasDuplicates = elem (-1) targetIndex
+        allUnique = length (nub targetIndex) == length matrix
         isInvalid = hasDuplicates || not allUnique
     in
         if isInvalid
@@ -55,7 +55,7 @@ repair matrix vector
 makeC :: Matrix -> Matrix
 makeC matrix = 
     [
-        [if i == j then 0 else -val / (row !! i) | (val, j) <- zip row [0..]]
+        [if i == j then 0 else - (val / (row !! i)) | (val, j) <- zip row [0..]]
         | (row, i) <- zip matrix [0..]
     ]
 

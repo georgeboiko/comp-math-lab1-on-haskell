@@ -9,7 +9,7 @@ import System.Directory (doesFileExist)
 import Control.Exception (try, SomeException, displayException)
 
 sanitize :: String -> String
-sanitize str = map (\c -> if c == ',' then '.' else c) str
+sanitize = map (\c -> if c == ',' then '.' else c)
 
 readTyped :: Read a => Handle -> String -> IO a
 readTyped h errorMsg = do
@@ -22,7 +22,7 @@ readTyped h errorMsg = do
                 hPutStrLn stderr errorMsg
                 readTyped h errorMsg
             else
-                error $ errorMsg
+                error errorMsg
 
 readInt :: Handle -> IO Int
 readInt h = readTyped h "Ошибка: введите int!"
@@ -53,7 +53,7 @@ readRow h n = do
                 hPutStrLn stderr "Ошибка: неверное количество чисел"
                 readRow h n
             else 
-                error $ "Ошибка в файле: неверное количество чисел в строке"
+                error "Ошибка в файле: неверное количество чисел в строке"
         else
             case readNumbers cleanParts of
                 Just row -> return row
@@ -62,12 +62,10 @@ readRow h n = do
                         hPutStrLn stderr "Ошибка: в строке есть не числа"
                         readRow h n
                     else 
-                        error $ "Ошибка в файле: в строке есть не числа"
+                        error "Ошибка в файле: в строке есть не числа"
 
 readVector :: Handle -> Int -> IO Vector
-readVector h n = do
-    vec <- readRow h n
-    return vec
+readVector h n = do readRow h n
 
 readMatrix :: Handle -> Int -> Int -> IO Matrix
 readMatrix _ 0 _ = return []

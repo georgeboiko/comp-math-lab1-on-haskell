@@ -17,14 +17,14 @@ formatMatrixRow row = "| " ++ unwords (map formatDouble row) ++ " |"
 
 writeToConsole :: OutputData -> IO ()
 writeToConsole output = do
-    if (_isSuccess output) then do
+    if _isSuccess output then do
         putStr "Норма матрицы: "
         putStrLn $ formatDouble (_norm output)
 
         writeVector (_ansVector output) "x" "Вектор неизвестных:"
 
         putStr "Количество итераций: "
-        putStrLn $ show (_iters output)
+        print (_iters output)
 
         writeVector (_errVector output) "err" "Вектор погрешностей:"        
     else
