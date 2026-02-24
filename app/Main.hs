@@ -9,7 +9,7 @@ import Processors.SimpleIterationsProcessors
 import Utils.Generators
 
 main :: IO ()
-main = scotty 3000 $ do
+main = scotty 8000 $ do
 
     post "/api/lab/1" $ do
         requestData <-jsonData :: ActionM Lab1InputData
