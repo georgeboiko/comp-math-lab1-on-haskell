@@ -1,7 +1,8 @@
 module Writers where
 
-import Types
 import Text.Printf (printf)
+import Types.ResponseTypes
+import Types.MathTypes
 
 formatDoubleWithPrecision :: Double -> Int -> String
 formatDoubleWithPrecision num precision = printf "%.*f" precision num
@@ -15,7 +16,7 @@ formatVector vector name = [name ++ "_" ++ show (i :: Int) ++ " = " ++ formatDou
 formatMatrixRow :: [Double] -> String
 formatMatrixRow row = "| " ++ unwords (map formatDouble row) ++ " |"
 
-writeToConsole :: OutputData -> IO ()
+writeToConsole :: Lab1OutputData -> IO ()
 writeToConsole output = do
     if _isSuccess output then do
         putStr "Норма матрицы: "

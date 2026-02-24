@@ -2,11 +2,12 @@ module Readers (readFromConsole, readFromFile, readForGeneration) where
 
 import Generators
 import Writers (writeMatrix, writeVector)
-import Types
 import Text.Read (readMaybe)
 import System.IO
 import System.Directory (doesFileExist)
 import Control.Exception (try, SomeException, displayException)
+import Types.MathTypes
+import Types.RequestTypes (Lab1InputData (..))
 
 sanitize :: String -> String
 sanitize = map (\c -> if c == ',' then '.' else c)
@@ -74,25 +75,25 @@ readMatrix h n cols = do
     other <- readMatrix h (n-1) cols
     return $ row : other
 
-readAllData :: Handle -> IO InputData
+readAllData :: Handle -> IO Lab1InputData
 readAllData h = do
     n <- readInt h
     matrix <- readMatrix h n n
     vector <- readVector h n
     eps <- readDouble h
-    return InputData
+    return Lab1InputData
         { _n = n
         , _matrix = matrix
         , _vector = vector
         , _eps = eps
         }
 
-readFromConsole :: IO InputData
+readFromConsole :: IO Lab1InputData
 readFromConsole = do
     putStrLn "Введите n, матрицу, вектор и eps:"
     readAllData stdin
 
-readFromFile :: IO InputData
+readFromFile :: IO Lab1InputData
 readFromFile = do
     putStrLn "Введите имя файла:"
     filename <- getLine
@@ -102,7 +103,7 @@ readFromFile = do
             putStrLn $ "Ошибка: Файл " ++ filename ++ " не найден."
             readFromFile
         else do
-            result <- try (withFile filename ReadMode readAllData) :: IO (Either SomeException InputData)  
+            result <- try (withFile filename ReadMode readAllData) :: IO (Either SomeException Lab1InputData)  
             case result of
                 Left ex -> do
                     putStrLn $ head (lines (displayException ex))
@@ -113,7 +114,7 @@ readFromFile = do
                     return inputData
             
 
-readForGeneration :: IO InputData
+readForGeneration :: IO Lab1InputData
 readForGeneration = do
     putStrLn "Введите n, eps:"
     n <- readInt stdin
@@ -125,7 +126,7 @@ readForGeneration = do
     writeMatrix matrix "Сгенерированная матрица:"
     writeVector vector "b" "Сгенерированный вектор:"
 
-    return InputData
+    return Lab1InputData
         { _n = n
         , _matrix = matrix
         , _vector = vector

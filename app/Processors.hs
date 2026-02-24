@@ -1,7 +1,9 @@
 module Processors (processData) where 
 
 import Data.List
-import Types
+import Types.MathTypes
+import Types.RequestTypes (Lab1InputData(..))
+import Types.ResponseTypes (Lab1OutputData(..))
 
 check :: Matrix -> Bool
 check m = checkHelper 0 m False
@@ -82,11 +84,11 @@ solve matrixC vectorD prev eps k
         cur = zipWith (+) (multiplyMatrixVector matrixC prev) vectorD
         errorVec = map abs (zipWith (-) cur prev)
 
-processData :: InputData -> IO OutputData
+processData :: Lab1InputData -> IO Lab1OutputData
 processData input = do 
     let (matrixA, vectorB) = repair (_matrix input) (_vector input)
     if not (check matrixA)
-        then return OutputData
+        then return Lab1OutputData
             { _isSuccess = False
             , _ansVector = []
             , _errVector = []
@@ -98,7 +100,7 @@ processData input = do
                 vectorD = makeD vectorB matrixA
                 normC = matrixNorm matrixC
                 (result, iters, errorVec) = solve matrixC vectorD vectorD (_eps input) 0
-            return OutputData
+            return Lab1OutputData
                 { _isSuccess = True
                 , _ansVector = result
                 , _errVector = errorVec
