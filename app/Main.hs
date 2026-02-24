@@ -2,11 +2,11 @@
 
 module Main where
 
-import Processors (processData)
 import Web.Scotty
 import Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..))
 import Types.ResponseTypes
-import Generators
+import Processors.SimpleIterationsProcessors
+import Utils.Generators
 
 main :: IO ()
 main = scotty 3000 $ do
@@ -30,7 +30,7 @@ main = scotty 3000 $ do
             , lab1Eps = lab1GenEps requestData 
             }
         payload <- liftIO $ processData inputData
-        
+
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab1Response {lab1Info = info, lab1Payload = payload}
         json response

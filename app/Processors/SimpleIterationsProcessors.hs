@@ -1,4 +1,4 @@
-module Processors (processData) where 
+module Processors.SimpleIterationsProcessors (processData) where 
 
 import Data.List
 import Types.MathTypes

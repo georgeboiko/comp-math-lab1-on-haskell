@@ -1,4 +1,4 @@
-module Generators (generateMatrix, generateVector) where
+module Utils.Generators (generateMatrix, generateVector) where
 
 import System.Random (randomRIO)
 import Types.MathTypes
