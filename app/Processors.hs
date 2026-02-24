@@ -86,24 +86,28 @@ solve matrixC vectorD prev eps k
 
 processData :: Lab1InputData -> IO Lab1OutputData
 processData input = do 
-    let (matrixA, vectorB) = repair (_matrix input) (_vector input)
+    let (matrixA, vectorB) = repair (lab1Matrix input) (lab1Vector input)
     if not (check matrixA)
         then return Lab1OutputData
-            { _isSuccess = False
-            , _ansVector = []
-            , _errVector = []
-            , _iters = -1
-            , _norm = -1
+            { lab1IsSuccess = False
+            , lab1ClientMatrix = matrixA
+            , lab1ClientVector = vectorB
+            , lab1AnsVector = []
+            , lab1ErrVector = []
+            , lab1Iters = -1
+            , lab1Norm = -1
             }
         else do
             let matrixC = makeC matrixA
                 vectorD = makeD vectorB matrixA
                 normC = matrixNorm matrixC
-                (result, iters, errorVec) = solve matrixC vectorD vectorD (_eps input) 0
+                (result, iters, errorVec) = solve matrixC vectorD vectorD (lab1Eps input) 0
             return Lab1OutputData
-                { _isSuccess = True
-                , _ansVector = result
-                , _errVector = errorVec
-                , _iters = iters
-                , _norm = normC
+                { lab1IsSuccess = True
+                , lab1ClientMatrix = matrixA
+                , lab1ClientVector = vectorB
+                , lab1AnsVector = result
+                , lab1ErrVector = errorVec
+                , lab1Iters = iters
+                , lab1Norm = normC
                 }

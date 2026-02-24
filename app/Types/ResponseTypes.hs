@@ -5,26 +5,28 @@ import Data.Aeson (ToJSON)
 import Types.MathTypes
 
 data Response = Response 
-    { _status  :: String
-    , _code    :: Int
-    , _message :: String 
+    { resStatus  :: String
+    , resCode    :: Int
+    , resMessage :: String 
     } deriving (Show, Generic)
 
 instance ToJSON Response
 
 data Lab1OutputData = Lab1OutputData
-    { _isSuccess :: Bool
-    , _ansVector :: Vector
-    , _errVector :: Vector
-    , _iters :: Int
-    , _norm :: Double
+    { lab1IsSuccess :: Bool
+    , lab1ClientMatrix :: Matrix
+    , lab1ClientVector :: Vector
+    , lab1AnsVector :: Vector
+    , lab1ErrVector :: Vector
+    , lab1Iters :: Int
+    , lab1Norm :: Double
     } deriving (Show, Generic)
 
 instance ToJSON Lab1OutputData
 
 data Lab1Response = Lab1Response
-    { _info :: Response
-    , _payload :: Lab1OutputData
+    { lab1Info :: Response
+    , lab1Payload :: Lab1OutputData
     } deriving (Show, Generic)
 
 instance ToJSON Lab1Response
