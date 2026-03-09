@@ -60,7 +60,9 @@ executable lab1-haskell
         Types.RequestTypes,
         Types.ResponseTypes,
         Utils.Generators,
-        Processors.SimpleIterationsProcessors
+        Utils.EquationStorage,
+        Processors.Lab1SimpleIterationsProcessor,
+        Processors.Lab2ChordProcessor
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:

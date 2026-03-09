@@ -1,4 +1,4 @@
-module Processors.SimpleIterationsProcessors (processData) where 
+module Processors.Lab1SimpleIterationsProcessor (processLab1Data) where 
 
 import Data.List
 import Types.MathTypes
@@ -84,8 +84,8 @@ solve matrixC vectorD prev eps k
         cur = zipWith (+) (multiplyMatrixVector matrixC prev) vectorD
         errorVec = map abs (zipWith (-) cur prev)
 
-processData :: Lab1InputData -> IO Lab1OutputData
-processData input = do 
+processLab1Data :: Lab1InputData -> IO Lab1OutputData
+processLab1Data input = do 
     let (matrixA, vectorB) = repair (lab1Matrix input) (lab1Vector input)
     if not (check matrixA)
         then return Lab1OutputData

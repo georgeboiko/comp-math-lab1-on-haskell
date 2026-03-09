@@ -3,9 +3,10 @@
 module Main where
 
 import Web.Scotty
-import Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..))
+import Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..), Lab2InputChordData(..))
 import Types.ResponseTypes
-import Processors.SimpleIterationsProcessors
+import Processors.Lab1SimpleIterationsProcessor
+import Processors.Lab2ChordProcessor
 import Utils.Generators
 
 main :: IO ()
@@ -13,7 +14,7 @@ main = scotty 8000 $ do
 
     post "/api/lab/1" $ do
         requestData <-jsonData :: ActionM Lab1InputData
-        payload <- liftIO $ processData requestData
+        payload <- liftIO $ processLab1Data requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab1Response {lab1Info = info, lab1Payload = payload}
         json response
@@ -29,10 +30,17 @@ main = scotty 8000 $ do
             , lab1Vector = vector
             , lab1Eps = lab1GenEps requestData 
             }
-        payload <- liftIO $ processData inputData
+        payload <- liftIO $ processLab1Data inputData
 
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab1Response {lab1Info = info, lab1Payload = payload}
+        json response
+    
+    post "/api/lab/2/chord" $ do
+        requestData <- jsonData :: ActionM Lab2InputChordData
+        payload <- liftIO $ processLab2ChordData requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response
 
     get "/api/health/check" $ do
