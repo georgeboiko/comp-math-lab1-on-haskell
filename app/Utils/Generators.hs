@@ -1,7 +1,7 @@
-module Generators (generateMatrix, generateVector) where
+module Utils.Generators (generateMatrix, generateVector) where
 
-import Types
 import System.Random (randomRIO)
+import Types.MathTypes
 
 generateVector :: Int -> IO Vector
 generateVector 0 = return []
