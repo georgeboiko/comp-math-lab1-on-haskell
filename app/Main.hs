@@ -3,10 +3,11 @@
 module Main where
 
 import Web.Scotty
-import Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..), Lab2InputChordData(..))
+import Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..), Lab2InputEquationData(..))
 import Types.ResponseTypes
 import Processors.Lab1SimpleIterationsProcessor
 import Processors.Lab2ChordProcessor
+import Processors.Lab2NewtonProcessor
 import Utils.Generators
 
 main :: IO ()
@@ -37,8 +38,15 @@ main = scotty 8000 $ do
         json response
     
     post "/api/lab/2/chord" $ do
-        requestData <- jsonData :: ActionM Lab2InputChordData
+        requestData <- jsonData :: ActionM Lab2InputEquationData
         payload <- liftIO $ processLab2ChordData requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab2Response {lab2Info = info, lab2Payload = payload}
+        json response
+    
+    post "/api/lab/2/newton" $ do
+        requestData <- jsonData :: ActionM Lab2InputEquationData
+        payload <- liftIO $ processLab2NewtonData requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response

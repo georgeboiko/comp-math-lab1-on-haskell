@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
-module Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..), Lab2InputChordData(..)) where
+module Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..), Lab2InputEquationData(..)) where
 import Data.Aeson (FromJSON)
 import Types.MathTypes
 import GHC.Generics (Generic)
@@ -20,11 +20,11 @@ data Lab1GenerateData = Lab1GenerateData
 
 instance FromJSON Lab1GenerateData
 
-data Lab2InputChordData = Lab2InputChordData 
-    { equationChordId :: Int
-    , chordA :: Double
-    , chordB :: Double
-    , chordEps :: Double
+data Lab2InputEquationData = Lab2InputEquationData 
+    { lab2EquationId :: Int
+    , lab2A :: Double
+    , lab2B :: Double
+    , lab2Eps :: Double
     } deriving (Show, Generic)
 
-instance FromJSON Lab2InputChordData
+instance FromJSON Lab2InputEquationData
