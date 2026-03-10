@@ -8,6 +8,7 @@ import Types.ResponseTypes
 import Processors.Lab1SimpleIterationsProcessor
 import Processors.Lab2ChordProcessor
 import Processors.Lab2NewtonProcessor
+import Processors.Lab2SimpleIterationsProcessor
 import Utils.Generators
 
 main :: IO ()
@@ -47,6 +48,13 @@ main = scotty 8000 $ do
     post "/api/lab/2/newton" $ do
         requestData <- jsonData :: ActionM Lab2InputEquationData
         payload <- liftIO $ processLab2NewtonData requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab2Response {lab2Info = info, lab2Payload = payload}
+        json response
+
+    post "/api/lab/2/iters" $ do
+        requestData <- jsonData :: ActionM Lab2InputEquationData
+        payload <- liftIO $ processLab2SimpleIterationsData requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response

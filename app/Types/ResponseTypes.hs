@@ -35,7 +35,10 @@ instance ToJSON Lab1Response
 
 data Lab2OutputData = Lab2OutputData
     { lab2IsSuccess :: Bool
-    , lab2Ans :: Double
+    , lab2EquationString :: String
+    , lab2EquationLatex :: String
+    , lab2Root :: Double
+    , lab2Value :: Double
     , lab2ErrMessage :: String
     , lab2Iters :: Int
     } deriving (Show, Generic)
