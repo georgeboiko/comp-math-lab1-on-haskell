@@ -1,4 +1,4 @@
-module Utils.EquationStorage (Equation(..), SystemEquation(..), getEquationById, getSystemById) where
+module Utils.EquationStorage (Equation(..), SystemEquation(..), getEquationById, getSystemById, equations, systems) where
 
 import Types.MathTypes
 

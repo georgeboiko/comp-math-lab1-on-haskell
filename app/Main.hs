@@ -11,6 +11,8 @@ import Processors.Lab2NewtonProcessor
 import Processors.Lab2SimpleIterationsProcessor
 import Processors.Lab2SystemNewtonProcessor
 import Utils.Generators
+import Utils.EquationStorage (equations, systems, Equation(..), SystemEquation(..))
+import Data.List (findIndex)
 
 main :: IO ()
 main = scotty 8000 $ do
@@ -37,6 +39,22 @@ main = scotty 8000 $ do
 
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab1Response {lab1Info = info, lab1Payload = payload}
+        json response
+
+    get "/api/lab/2/equations" $ do
+        let response = zipWith (\i eq -> Lab2EquationData
+                { equationId     = i
+                , equationString = fString eq
+                , equationLatex  = fLatex eq
+                }) [0..] equations
+        json response
+
+    get "/api/lab/2/systems" $ do
+        let response = zipWith (\i sys -> Lab2SystemData
+                { systemInfoId      = i
+                , systemInfoStrings = systemStrings sys
+                , systemInfoLatex   = systemLatex sys
+                }) [0..] systems
         json response
     
     post "/api/lab/2/chord" $ do
