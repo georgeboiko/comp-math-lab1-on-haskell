@@ -47,7 +47,11 @@ systems =
     ]
 
 getEquationById :: Int -> Equation
-getEquationById index = equations !! index
+getEquationById index
+    | index >= 0 = equations !! index
+    | otherwise = head equations
 
 getSystemById :: Int -> SystemEquation
-getSystemById index = systems !! index
+getSystemById index
+    | index >= 0 = systems !! index
+    | otherwise = head systems

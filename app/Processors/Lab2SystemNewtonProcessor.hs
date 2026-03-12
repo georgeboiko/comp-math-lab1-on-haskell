@@ -23,10 +23,20 @@ solveLinearSystem a b = backSubst (forwardIters extended)
 
     backSubst = foldr (\row acc -> (last row - sum (zipWith (*) (init (tail row)) acc)) : acc) []
 
-solveNewtonSystem :: [Vector -> Double] -> (Vector -> Matrix) -> Vector -> Double -> Int -> (Bool, Vector, Int, String)
+solveNewtonSystem :: [Vector -> Double] -> (Vector -> Matrix) -> Vector -> Double -> Int -> SolverSystemOutputData
 solveNewtonSystem fs getJacobian x_cur eps iters
-    | iters >= 100 = (False, x_cur, iters, "Cnt of iters exceeded. Method diverges.")
-    | maxDelta <= eps = (True, x_next, iters + 1, "ok")
+    | iters >= 100 = SolverSystemOutputData {
+        isSystemSucessfully = False
+        , calculatedVector = x_cur
+        , informationSystemMsg = "Cnt of iters exceeded. Method diverges."
+        , iterationsSystemCnt = iters
+        }
+    | maxDelta <= eps = SolverSystemOutputData {
+        isSystemSucessfully = True
+        , calculatedVector = x_next
+        , informationSystemMsg = "ok"
+        , iterationsSystemCnt = iters + 1
+        }
     | otherwise = solveNewtonSystem fs getJacobian x_next eps (iters + 1)
   where
     fVals = map ($ x_cur) fs
@@ -43,16 +53,16 @@ processLab2NewtonSystemData input = do
     let x0 = lab2InitialGuess input
     let eps = lab2SystemEps input
 
-    let (success, root, iters, msg) = solveNewtonSystem fs (systemJacobian sys) x0 eps 0
+    let ans = solveNewtonSystem fs (systemJacobian sys) x0 eps 0
 
-    let errorVector = map (\f -> f root) fs
+    let errorVector = map (\f -> f (calculatedVector ans)) fs
 
     return Lab2OutputSystemData
-        { lab2SystemIsSuccess = success
+        { lab2SystemIsSuccess = isSystemSucessfully ans
         , lab2SystemEquationString = systemStrings sys
         , lab2SystemEquationLatex = systemLatex sys
-        , lab2SystemRoot = root
-        , lab2SystemErrMessage = msg
+        , lab2SystemRoot = calculatedVector ans
+        , lab2SystemErrMessage = informationSystemMsg ans
         , lab2SystemErrVector = errorVector
-        , lab2SystemIters = iters
+        , lab2SystemIters = iterationsSystemCnt ans
         }

@@ -3,7 +3,8 @@ module Types.ResponseTypes (Response(..),
     Lab1Response(..), Lab1OutputData(..),
     Lab2Response(..), Lab2OutputData(..),
     Lab2OutputSystemData(..), Lab2SystemResponse(..),
-    Lab2EquationData(..), Lab2SystemData(..)) where
+    Lab2EquationData(..), Lab2SystemData(..),
+    SolverEquationOutputData(..), SolverSystemOutputData(..)) where
 import GHC.Generics (Generic)
 import Data.Aeson (ToJSON)
 import Types.MathTypes
@@ -88,3 +89,17 @@ data Lab2SystemData = Lab2SystemData
     } deriving (Show, Generic)
 
 instance ToJSON Lab2SystemData
+
+data SolverEquationOutputData = SolverEquationOutputData
+    { isSucessfully :: Bool
+    , calculatedAns :: Double
+    , informationMsg :: String
+    , iterationsCnt :: Int
+    }
+
+data SolverSystemOutputData = SolverSystemOutputData
+    { isSystemSucessfully :: Bool
+    , calculatedVector :: Vector
+    , informationSystemMsg :: String
+    , iterationsSystemCnt :: Int
+    }
