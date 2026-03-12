@@ -51,10 +51,10 @@ processLab2SimpleIterationsData input = do
     let ans = solve (equation eq) (equation' eq) (lab2A input) (lab2B input) (lab2Eps input)
     return Lab2OutputData
         { lab2IsSuccess = isSucessfully ans
-        , lab2EquationString = (fString eq)
-        , lab2EquationLatex = (fLatex eq)
+        , lab2EquationString = fString eq
+        , lab2EquationLatex = fLatex eq
         , lab2Root = calculatedAns ans
-        , lab2Value = (equation eq) (calculatedAns ans)
+        , lab2Value = equation eq (calculatedAns ans)
         , lab2ErrMessage = informationMsg ans
         , lab2Iters = iterationsCnt ans
         }
