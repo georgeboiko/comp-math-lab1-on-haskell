@@ -6,6 +6,7 @@ import Types.ResponseTypes
 import Utils.EquationStorage
 import Data.List (maximumBy)
 import Data.Ord (comparing)
+import Types.SolverTypes (SolverSystemOutputData(..))
 
 solveLinearSystem :: Matrix -> Vector -> Vector
 solveLinearSystem a b = backSubst (forwardIters extended)

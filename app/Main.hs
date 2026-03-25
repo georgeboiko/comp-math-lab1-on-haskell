@@ -6,13 +6,13 @@ import Web.Scotty
 import Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..), Lab2InputEquationData(..), Lab2InputSystemData(..))
 import Types.ResponseTypes
 import Processors.Lab1SimpleIterationsProcessor
-import Processors.Lab2ChordProcessor
-import Processors.Lab2NewtonProcessor
-import Processors.Lab2SimpleIterationsProcessor
+import Processors.Lab2Processor
 import Processors.Lab2SystemNewtonProcessor
+import Methods.Lab2ChordMethod
+import Methods.Lab2SimpleIterationsMethod
+import Methods.Lab2NewtonMethod
 import Utils.Generators
 import Utils.EquationStorage (equations, systems, Equation(..), SystemEquation(..))
-import Data.List (findIndex)
 
 main :: IO ()
 main = scotty 8000 $ do
@@ -59,21 +59,21 @@ main = scotty 8000 $ do
     
     post "/api/lab/2/chord" $ do
         requestData <- jsonData :: ActionM Lab2InputEquationData
-        payload <- liftIO $ processLab2ChordData requestData
+        payload <- liftIO $ processLab2Data ChordMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response
     
     post "/api/lab/2/newton" $ do
         requestData <- jsonData :: ActionM Lab2InputEquationData
-        payload <- liftIO $ processLab2NewtonData requestData
+        payload <- liftIO $ processLab2Data NewtonEqMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response
 
     post "/api/lab/2/iters" $ do
         requestData <- jsonData :: ActionM Lab2InputEquationData
-        payload <- liftIO $ processLab2SimpleIterationsData requestData
+        payload <- liftIO $ processLab2Data SimpleItersMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response
