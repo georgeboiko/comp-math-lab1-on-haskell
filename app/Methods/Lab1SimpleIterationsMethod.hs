@@ -1,9 +1,27 @@
-module Processors.Lab1SimpleIterationsProcessor (processLab1Data) where 
+module Methods.Lab1SimpleIterationsMethod (SystemSimpleItersMethod(..)) where 
 
 import Data.List
 import Types.MathTypes
-import Types.RequestTypes (Lab1InputData(..))
-import Types.ResponseTypes (Lab1OutputData(..))
+import Types.SolverTypes (LinearSystemSolver (solveLinearSystem), SolverLinearSystemOutputData (..))
+
+data SystemSimpleItersMethod = SystemSimpleItersMethod
+
+instance LinearSystemSolver SystemSimpleItersMethod where
+    solveLinearSystem _ matrixA vectorB eps
+        | not (check repairedA) = SolverLinearSystemOutputData {
+            linIsSystemSucessfully = False
+            , linCalculatedVector = []
+            , linErrVector = []
+            , linMatrixNorm = -1
+            , linInformationSystemMsg = "Diagonal dominance failed."
+            , linIterationsSystemCnt = -1
+            }
+        | otherwise = solve matrixC vectorD vectorD eps 0 normC
+        where
+            (repairedA, repairedB) = repair matrixA vectorB
+            matrixC = makeC repairedA
+            vectorD = makeD repairedB repairedA
+            normC = matrixNorm matrixC
 
 check :: Matrix -> Bool
 check m = checkHelper 0 m False
@@ -76,38 +94,17 @@ matrixNorm matrix = maximum [sum (map abs row) | row <- matrix]
 multiplyMatrixVector :: Matrix -> Vector -> Vector
 multiplyMatrixVector m v = [sum (zipWith (*) row v) | row <- m]
 
-solve :: Matrix -> Vector -> Vector -> Double -> Int -> (Vector, Int, Vector)
-solve matrixC vectorD prev eps k
-    | norm errorVec < eps = (cur, k + 1, errorVec)
-    | otherwise = solve matrixC vectorD cur eps (k + 1)
+solve :: Matrix -> Vector -> Vector -> Double -> Int -> Double -> SolverLinearSystemOutputData
+solve matrixC vectorD prev eps k normC
+    | norm errorVec < eps = SolverLinearSystemOutputData {
+        linIsSystemSucessfully = True
+        , linCalculatedVector = cur
+        , linErrVector = errorVec
+        , linMatrixNorm = normC
+        , linInformationSystemMsg = "ok"
+        , linIterationsSystemCnt = k + 1
+        }
+    | otherwise = solve matrixC vectorD cur eps (k + 1) normC
     where
         cur = zipWith (+) (multiplyMatrixVector matrixC prev) vectorD
         errorVec = map abs (zipWith (-) cur prev)
-
-processLab1Data :: Lab1InputData -> IO Lab1OutputData
-processLab1Data input = do 
-    let (matrixA, vectorB) = repair (lab1Matrix input) (lab1Vector input)
-    if not (check matrixA)
-        then return Lab1OutputData
-            { lab1IsSuccess = False
-            , lab1ClientMatrix = matrixA
-            , lab1ClientVector = vectorB
-            , lab1AnsVector = []
-            , lab1ErrVector = []
-            , lab1Iters = -1
-            , lab1Norm = -1
-            }
-        else do
-            let matrixC = makeC matrixA
-                vectorD = makeD vectorB matrixA
-                normC = matrixNorm matrixC
-                (result, iters, errorVec) = solve matrixC vectorD vectorD (lab1Eps input) 0
-            return Lab1OutputData
-                { lab1IsSuccess = True
-                , lab1ClientMatrix = matrixA
-                , lab1ClientVector = vectorB
-                , lab1AnsVector = result
-                , lab1ErrVector = errorVec
-                , lab1Iters = iters
-                , lab1Norm = normC
-                }

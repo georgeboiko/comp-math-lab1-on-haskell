@@ -1,12 +1,12 @@
-module Methods.Lab2SimpleIterationsMethod (SimpleItersMethod(..)) where
+module Methods.Lab2SimpleIterationsMethod (EqSimpleItersMethod(..)) where
 
 import Utils.EquationStorage
 import Utils.MathUtils
 import Types.SolverTypes
 
-data SimpleItersMethod = SimpleItersMethod
+data EqSimpleItersMethod = EqSimpleItersMethod
 
-instance EquationSolver SimpleItersMethod where
+instance EquationSolver EqSimpleItersMethod where
     solveEquation _ eq a b eps 
         | not (hasRoot (equation eq) a b) = SolverEquationOutputData {
             isSucessfully = False

@@ -1,7 +1,8 @@
-module Types.SolverTypes (SolverEquationOutputData(..), SolverSystemOutputData(..),
-    EquationSolver (..)) where
+module Types.SolverTypes (SolverEquationOutputData(..), SolverLinearSystemOutputData(..),
+    SolverNonLinearSystemOutputData(..), EquationSolver(..), LinearSystemSolver(..),
+    NonLinearSystemSolver(..)) where
 
-import Utils.EquationStorage (Equation)
+import Utils.EquationStorage (Equation, SystemEquation)
 import Types.MathTypes
 
 data SolverEquationOutputData = SolverEquationOutputData
@@ -11,12 +12,28 @@ data SolverEquationOutputData = SolverEquationOutputData
     , iterationsCnt :: Int
     }
 
-data SolverSystemOutputData = SolverSystemOutputData
-    { isSystemSucessfully :: Bool
-    , calculatedVector :: Vector
-    , informationSystemMsg :: String
-    , iterationsSystemCnt :: Int
+data SolverLinearSystemOutputData = SolverLinearSystemOutputData
+    { linIsSystemSucessfully :: Bool
+    , linCalculatedVector :: Vector
+    , linErrVector :: Vector
+    , linMatrixNorm :: Double
+    , linInformationSystemMsg :: String
+    , linIterationsSystemCnt :: Int
     }
+
+data SolverNonLinearSystemOutputData = SolverNonLinearSystemOutputData
+    { nonLinIsSystemSucessfully :: Bool
+    , nonLinCalculatedVector :: Vector
+    , nonLinInformationSystemMsg :: String
+    , nonLinIterationsSystemCnt :: Int
+    }
+
+class LinearSystemSolver s where
+    solveLinearSystem :: s
+        -> Matrix
+        -> Vector
+        -> Double
+        -> SolverLinearSystemOutputData
 
 class EquationSolver s where
     solveEquation :: s
@@ -25,3 +42,10 @@ class EquationSolver s where
         -> Double
         -> Double
         -> SolverEquationOutputData
+
+class NonLinearSystemSolver s where
+    solveNonLinearSystem :: s
+        -> SystemEquation
+        -> Vector
+        -> Double
+        -> SolverNonLinearSystemOutputData

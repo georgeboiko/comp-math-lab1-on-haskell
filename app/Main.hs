@@ -5,12 +5,13 @@ module Main where
 import Web.Scotty
 import Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..), Lab2InputEquationData(..), Lab2InputSystemData(..))
 import Types.ResponseTypes
-import Processors.Lab1SimpleIterationsProcessor
+import Processors.Lab1Processor
 import Processors.Lab2Processor
-import Processors.Lab2SystemNewtonProcessor
+import Methods.Lab1SimpleIterationsMethod
 import Methods.Lab2ChordMethod
-import Methods.Lab2SimpleIterationsMethod
 import Methods.Lab2NewtonMethod
+import Methods.Lab2SimpleIterationsMethod
+import Methods.Lab2SystemNewtonMethod
 import Utils.Generators
 import Utils.EquationStorage (equations, systems, Equation(..), SystemEquation(..))
 
@@ -19,7 +20,7 @@ main = scotty 8000 $ do
 
     post "/api/lab/1" $ do
         requestData <-jsonData :: ActionM Lab1InputData
-        payload <- liftIO $ processLab1Data requestData
+        payload <- liftIO $ processLab1Data SystemSimpleItersMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab1Response {lab1Info = info, lab1Payload = payload}
         json response
@@ -35,7 +36,7 @@ main = scotty 8000 $ do
             , lab1Vector = vector
             , lab1Eps = lab1GenEps requestData 
             }
-        payload <- liftIO $ processLab1Data inputData
+        payload <- liftIO $ processLab1Data SystemSimpleItersMethod inputData
 
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab1Response {lab1Info = info, lab1Payload = payload}
@@ -59,28 +60,28 @@ main = scotty 8000 $ do
     
     post "/api/lab/2/chord" $ do
         requestData <- jsonData :: ActionM Lab2InputEquationData
-        payload <- liftIO $ processLab2Data ChordMethod requestData
+        payload <- liftIO $ processLab2EquationData ChordMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response
     
     post "/api/lab/2/newton" $ do
         requestData <- jsonData :: ActionM Lab2InputEquationData
-        payload <- liftIO $ processLab2Data NewtonEqMethod requestData
+        payload <- liftIO $ processLab2EquationData NewtonEqMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response
 
     post "/api/lab/2/iters" $ do
         requestData <- jsonData :: ActionM Lab2InputEquationData
-        payload <- liftIO $ processLab2Data SimpleItersMethod requestData
+        payload <- liftIO $ processLab2EquationData EqSimpleItersMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response
 
     post "/api/lab/2/system" $ do
         requestData <- jsonData :: ActionM Lab2InputSystemData
-        payload <- liftIO $ processLab2NewtonSystemData requestData
+        payload <- liftIO $ processLab2SystemData NewtonSystemMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2SystemResponse {lab2SystemInfo = info, lab2SystemPayload = payload}
         json response

@@ -63,12 +63,13 @@ executable lab1-haskell
         Utils.Generators,
         Utils.EquationStorage,
         Utils.MathUtils,
+        Methods.Lab1SimpleIterationsMethod,
         Methods.Lab2ChordMethod,
         Methods.Lab2SimpleIterationsMethod,
         Methods.Lab2NewtonMethod,
-        Processors.Lab1SimpleIterationsProcessor,
-        Processors.Lab2Processor,
-        Processors.Lab2SystemNewtonProcessor
+        Methods.Lab2SystemNewtonMethod,
+        Processors.Lab1Processor,
+        Processors.Lab2Processor
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
