@@ -1,6 +1,7 @@
 module Methods.Lab3RectanglesMethod (LeftRectanglesMethod(..), MiddleRectanglesMethod(..), RightRectanglesMethod(..)) where
 import Types.SolverTypes
 import Utils.EquationStorage
+import Utils.MathUtils (badPointsHandling)
 
 class RectanglesStrategy s where
     getPointOffset :: s -> Double
@@ -18,7 +19,9 @@ instance IntegralSolver MiddleRectanglesMethod where solveIntegral = genericSolv
 instance IntegralSolver RightRectanglesMethod where solveIntegral = genericSolve
 
 genericSolve :: (RectanglesStrategy s) => s -> FunctionEq -> Double -> Double -> Double -> SolverIntegralOutputData
-genericSolve strategy func a b eps = solve strategy (functionEq func) a b eps 4 (calcRectangle strategy (functionEq func) a b 2)
+genericSolve strategy func a b eps = 
+    badPointsHandling func a b eps $ \f sa sb se -> 
+            solve strategy f sa sb se 4 (calcRectangle strategy f sa sb 2)
 
 calcRectangle :: (RectanglesStrategy s) => s -> (Double -> Double) -> Double -> Double -> Int -> Double
 calcRectangle strategy f a b n = 

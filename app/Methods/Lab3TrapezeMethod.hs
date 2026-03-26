@@ -1,11 +1,13 @@
 module Methods.Lab3TrapezeMethod (TrapezeMethod(..)) where
 import Types.SolverTypes
-import Utils.EquationStorage
+import Utils.MathUtils (badPointsHandling)
 
 data TrapezeMethod = TrapezeMethod
 
 instance IntegralSolver TrapezeMethod where
-    solveIntegral _ func a b eps = solve (functionEq func) a b eps 4 (calcTrapeze (functionEq func) a b 2)
+    solveIntegral _ func a b eps = 
+        badPointsHandling func a b eps $ \f sa sb se -> 
+            solve f sa sb se 4 (calcTrapeze f sa sb 2)
 
 calcTrapeze :: (Double -> Double) -> Double -> Double -> Int -> Double
 calcTrapeze f a b n = 
