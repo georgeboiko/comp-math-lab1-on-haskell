@@ -23,7 +23,7 @@ badPointsHandling func a b eps solverFunc =
                 distR = abs (b - c)
                 vL = f (c - delta)
                 vR = f (c + delta)
-                delta = 1e-10
+                delta = 1e-8
                 
                 (newA, newB) = if distL > distR then (a, c - distR) else (c + distL, b)
                 isZero = abs (distL - distR) < 1e-5

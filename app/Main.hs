@@ -90,6 +90,14 @@ main = scotty 8000 $ do
         let response = Lab2SystemResponse {lab2SystemInfo = info, lab2SystemPayload = payload}
         json response
 
+    get "/api/lab/3/integrals" $ do
+        let response = zipWith (\i func -> Lab3IntegralData
+                { integralId     = i
+                , integralString = functionString func
+                , integralLatex  = functionLatex func
+                }) [0..] functions
+        json response
+
     post "/api/lab/3/rectangles/left" $ do
         requestData <- jsonData :: ActionM Lab3InputIntegralData
         payload <- liftIO $ processLab3IntegralData LeftRectanglesMethod requestData

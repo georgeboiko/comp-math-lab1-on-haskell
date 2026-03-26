@@ -1,6 +1,6 @@
 module Utils.EquationStorage (Equation(..), SystemEquation(..), FunctionEq(..),
     getEquationById, getSystemById, getFunctionById,
-    equations, systems) where
+    equations, systems, functions) where
 
 import Types.MathTypes
 
@@ -38,7 +38,8 @@ functions =
     [ FunctionEq (\x -> x**2 + 4*x + 2) Nothing "x^2 + 4*x + 2" "x^2 + 4x + 2"
     , FunctionEq (\x -> x**2 - 4) Nothing "x^2 - 4" "x^2 - 4"
     , FunctionEq (\x -> sin (2*x) + 5) Nothing "sin(2*x) + 5" "\\sin(2x) + 5"
-    , FunctionEq (1 /) (Just 0.0) "1/x" "1/x"
+    , FunctionEq (1 /) (Just 0.0) "1/x" "\\frac{1}{x}"
+    , FunctionEq (\x -> 1 / sqrt x) (Just 0.0) "1/sqrt(x)" "\\frac{1}{\\sqrt{x}}"
     ]
 
 systems :: [SystemEquation]
