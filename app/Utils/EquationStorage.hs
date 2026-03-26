@@ -21,6 +21,7 @@ data SystemEquation = SystemEq
 
 data FunctionEq = FunctionEq
     { functionEq :: Double -> Double
+    , badPoint :: Maybe Double
     , functionString :: String
     , functionLatex :: String
     }
@@ -34,9 +35,10 @@ equations =
 
 functions :: [FunctionEq]
 functions =
-    [ FunctionEq (\x -> x**2 + 4*x + 2) "x^2 + 4*x + 2" "x^2 + 4x + 2"
-    , FunctionEq (\x -> x**2 - 4) "x^2 - 4" "x^2 - 4"
-    , FunctionEq (\x -> sin (2*x) + 5) "sin(2*x) + 5" "\\sin(2x) + 5"
+    [ FunctionEq (\x -> x**2 + 4*x + 2) Nothing "x^2 + 4*x + 2" "x^2 + 4x + 2"
+    , FunctionEq (\x -> x**2 - 4) Nothing "x^2 - 4" "x^2 - 4"
+    , FunctionEq (\x -> sin (2*x) + 5) Nothing "sin(2*x) + 5" "\\sin(2x) + 5"
+    , FunctionEq (1 /) (Just 0.0) "1/x" "1/x"
     ]
 
 systems :: [SystemEquation]

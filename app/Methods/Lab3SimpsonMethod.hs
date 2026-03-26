@@ -5,8 +5,33 @@ import Utils.EquationStorage
 data SimpsonMethod = SimpsonMethod
 
 instance IntegralSolver SimpsonMethod where
-    solveIntegral _ func a b eps = solve (functionEq func) a b eps 4 (calcSimpson (functionEq func) a b 2)
+    solveIntegral _ func a b eps = 
+        case maybeC of
+            Nothing -> solve f a b eps 4 (calcSimpson f a b 2)
+            Just c ->
+                if c > a && c < b && (signum vL /= signum vR) then
+                    let                         
+                        (newA, newB) = if distL > distR then (a, c - distR) else (c + distL, b)
+                        isZero = abs (distL - distR) < delta
+                    in 
+                        if isZero 
+                            then SolverIntegralOutputData True 0 0 0 "Ok in PV"
+                        else 
+                            let res = solve f (newA + delta) (newB - delta) eps 4 (calcSimpson f (newA + delta) (newB - delta) 2)
+                            in res { integralInfromationMsg = "Ok in PV: used [" ++ show newA ++ ", " ++ show newB ++ "]" }
+                else
+                    solve f (a + delta) (b - delta) eps 4 (calcSimpson f (a + delta) (b - delta) 2)
 
+                where
+                    distL = abs (c - a)
+                    distR = abs (b - c)
+                    vL = f (c - delta)
+                    vR = f (c + delta)
+        where
+            f = functionEq func
+            maybeC = badPoint func
+            delta = 1e-10
+            
 calcSimpson :: (Double -> Double) -> Double -> Double -> Int -> Double
 calcSimpson f a b n = 
     h * (y0 + yn + 4 * sum oddValues + 2 * sum evenValues) / 3
