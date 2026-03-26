@@ -1,8 +1,9 @@
 module Types.SolverTypes (SolverEquationOutputData(..), SolverLinearSystemOutputData(..),
-    SolverNonLinearSystemOutputData(..), EquationSolver(..), LinearSystemSolver(..),
-    NonLinearSystemSolver(..)) where
+    SolverNonLinearSystemOutputData(..), SolverIntegralOutputData(..),
+    EquationSolver(..), LinearSystemSolver(..),
+    NonLinearSystemSolver(..), IntegralSolver(..)) where
 
-import Utils.EquationStorage (Equation, SystemEquation)
+import Utils.EquationStorage (Equation, SystemEquation, FunctionEq)
 import Types.MathTypes
 
 data SolverEquationOutputData = SolverEquationOutputData
@@ -28,6 +29,14 @@ data SolverNonLinearSystemOutputData = SolverNonLinearSystemOutputData
     , nonLinIterationsSystemCnt :: Int
     }
 
+data SolverIntegralOutputData = SolverIntegralOutputData
+    { isIntegralSuccessfully :: Bool
+    , calculatedIntegral :: Double
+    , errIntegralVal :: Double
+    , partsCount :: Int
+    , integralInfromationMsg :: String
+    }
+
 class LinearSystemSolver s where
     solveLinearSystem :: s
         -> Matrix
@@ -49,3 +58,11 @@ class NonLinearSystemSolver s where
         -> Vector
         -> Double
         -> SolverNonLinearSystemOutputData
+
+class IntegralSolver s where
+    solveIntegral :: s
+        -> FunctionEq 
+        -> Double
+        -> Double
+        -> Double
+        -> SolverIntegralOutputData

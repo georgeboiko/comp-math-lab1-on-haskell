@@ -68,8 +68,12 @@ executable lab1-haskell
         Methods.Lab2SimpleIterationsMethod,
         Methods.Lab2NewtonMethod,
         Methods.Lab2SystemNewtonMethod,
+        Methods.Lab3RectanglesMethod,
+        Methods.Lab3TrapezeMethod,
+        Methods.Lab3SimpsonMethod,
         Processors.Lab1Processor,
-        Processors.Lab2Processor
+        Processors.Lab2Processor,
+        Processors.Lab3Processor
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:

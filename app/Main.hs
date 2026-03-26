@@ -3,17 +3,21 @@
 module Main where
 
 import Web.Scotty
-import Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..), Lab2InputEquationData(..), Lab2InputSystemData(..))
+import Types.RequestTypes
 import Types.ResponseTypes
 import Processors.Lab1Processor
 import Processors.Lab2Processor
+import Processors.Lab3Processor
 import Methods.Lab1SimpleIterationsMethod
 import Methods.Lab2ChordMethod
 import Methods.Lab2NewtonMethod
 import Methods.Lab2SimpleIterationsMethod
 import Methods.Lab2SystemNewtonMethod
+import Methods.Lab3RectanglesMethod
+import Methods.Lab3TrapezeMethod
+import Methods.Lab3SimpsonMethod
 import Utils.Generators
-import Utils.EquationStorage (equations, systems, Equation(..), SystemEquation(..))
+import Utils.EquationStorage
 
 main :: IO ()
 main = scotty 8000 $ do
@@ -84,6 +88,41 @@ main = scotty 8000 $ do
         payload <- liftIO $ processLab2SystemData NewtonSystemMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2SystemResponse {lab2SystemInfo = info, lab2SystemPayload = payload}
+        json response
+
+    post "/api/lab/3/rectangles/left" $ do
+        requestData <- jsonData :: ActionM Lab3InputIntegralData
+        payload <- liftIO $ processLab3IntegralData LeftRectanglesMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab3Response {lab3Info = info, lab3Payload = payload}
+        json response
+
+    post "/api/lab/3/rectangles/middle" $ do
+        requestData <- jsonData :: ActionM Lab3InputIntegralData
+        payload <- liftIO $ processLab3IntegralData MiddleRectanglesMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab3Response {lab3Info = info, lab3Payload = payload}
+        json response
+
+    post "/api/lab/3/rectangles/right" $ do
+        requestData <- jsonData :: ActionM Lab3InputIntegralData
+        payload <- liftIO $ processLab3IntegralData RightRectanglesMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab3Response {lab3Info = info, lab3Payload = payload}
+        json response
+    
+    post "/api/lab/3/trapeze" $ do
+        requestData <- jsonData :: ActionM Lab3InputIntegralData
+        payload <- liftIO $ processLab3IntegralData TrapezeMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab3Response {lab3Info = info, lab3Payload = payload}
+        json response
+    
+    post "/api/lab/3/simpson" $ do
+        requestData <- jsonData :: ActionM Lab3InputIntegralData
+        payload <- liftIO $ processLab3IntegralData SimpsonMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab3Response {lab3Info = info, lab3Payload = payload}
         json response
 
     get "/api/health/check" $ do

@@ -1,20 +1,28 @@
-module Utils.EquationStorage (Equation(..), SystemEquation(..), getEquationById, getSystemById, equations, systems) where
+module Utils.EquationStorage (Equation(..), SystemEquation(..), FunctionEq(..),
+    getEquationById, getSystemById, getFunctionById,
+    equations, systems) where
 
 import Types.MathTypes
 
 data Equation = Eq
-    { equation  :: Double -> Double
+    { equation :: Double -> Double
     , equation' :: Double -> Double
     , equation'' :: Double -> Double
-    , fString    :: String
-    , fLatex     :: String
+    , fString :: String
+    , fLatex :: String
     }
 
 data SystemEquation = SystemEq
-    { systemFs      :: [Vector -> Double]
+    { systemFs :: [Vector -> Double]
     , systemJacobian :: Vector -> Matrix
     , systemStrings :: [String]
-    , systemLatex   :: String
+    , systemLatex :: String
+    }
+
+data FunctionEq = FunctionEq
+    { functionEq :: Double -> Double
+    , functionString :: String
+    , functionLatex :: String
     }
 
 equations :: [Equation]
@@ -22,6 +30,13 @@ equations =
     [ Eq (\x -> x**2 + 4*x + 2) (\x -> 2*x + 4) (const 2) "x^2 + 4*x + 2" "x^2 + 4x + 2"
     , Eq (\x -> x**2 - 4) (2 *) (const 2) "x^2 - 4" "x^2 - 4"
     , Eq (\x -> sin (2*x) + 5) (\x -> 2 * cos (2*x)) (\x -> -(4 * sin (2 * x))) "sin(2*x) + 5" "\\sin(2x) + 5"
+    ]
+
+functions :: [FunctionEq]
+functions =
+    [ FunctionEq (\x -> x**2 + 4*x + 2) "x^2 + 4*x + 2" "x^2 + 4x + 2"
+    , FunctionEq (\x -> x**2 - 4) "x^2 - 4" "x^2 - 4"
+    , FunctionEq (\x -> sin (2*x) + 5) "sin(2*x) + 5" "\\sin(2x) + 5"
     ]
 
 systems :: [SystemEquation]
@@ -55,3 +70,8 @@ getSystemById :: Int -> SystemEquation
 getSystemById index
     | index >= 0 = systems !! index
     | otherwise = head systems
+
+getFunctionById :: Int -> FunctionEq
+getFunctionById index
+    | index >= 0 = functions !! index
+    | otherwise = head functions
