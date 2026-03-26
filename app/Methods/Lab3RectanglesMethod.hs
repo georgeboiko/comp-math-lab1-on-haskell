@@ -37,6 +37,13 @@ solve strategy f a b eps n oldVal
         , partsCount = n
         , integralInfromationMsg = "ok"
         }
+    | n > 1000000 = SolverIntegralOutputData {
+        isIntegralSuccessfully = False
+        , calculatedIntegral = -1
+        , errIntegralVal = -1
+        , partsCount = n
+        , integralInfromationMsg = "Parts count limit exceeded. Maybe integral diverges."
+        }
     | otherwise = solve strategy f a b eps (n * 2) curVal
     where 
         curVal = calcRectangle strategy f a b n
