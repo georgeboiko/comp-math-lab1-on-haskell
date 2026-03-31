@@ -1,4 +1,4 @@
-module Methods.Lab3RectanglesMethod (LeftRectanglesMethod(..), MiddleRectanglesMethod(..), RightRectanglesMethod(..)) where
+module Methods.Lab3RectanglesMethod (LeftRectanglesMethod(..), MiddleRectanglesMethod(..), RightRectanglesMethod(..), calcRectangle) where
 import Types.SolverTypes
 import Utils.EquationStorage
 import Utils.MathUtils (badPointsHandling)

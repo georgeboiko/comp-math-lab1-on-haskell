@@ -40,6 +40,7 @@ functions =
     , FunctionEq (\x -> sin (2*x) + 5) Nothing "sin(2*x) + 5" "\\sin(2x) + 5"
     , FunctionEq (1 /) (Just 0.0) "1/x" "\\frac{1}{x}"
     , FunctionEq (\x -> 1 / sqrt x) (Just 0.0) "1/sqrt(x)" "\\frac{1}{\\sqrt{x}}"
+    , FunctionEq (\x -> sin x / x) (Just 0.0) "sin(x)/x" "\\frac{\\sin{x}}{x}"
     ]
 
 systems :: [SystemEquation]

@@ -16,6 +16,8 @@ import Methods.Lab2SystemNewtonMethod
 import Methods.Lab3RectanglesMethod
 import Methods.Lab3TrapezeMethod
 import Methods.Lab3SimpsonMethod
+import Methods.Lab3MonteCarloMethod
+import Methods.Lab3RussianRouletteMethod
 import Utils.Generators
 import Utils.EquationStorage
 
@@ -129,6 +131,25 @@ main = scotty 8000 $ do
     post "/api/lab/3/simpson" $ do
         requestData <- jsonData :: ActionM Lab3InputIntegralData
         payload <- liftIO $ processLab3IntegralData SimpsonMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab3Response {lab3Info = info, lab3Payload = payload}
+        json response
+
+    post "/api/lab/3/montecarlo" $ do
+        requestData <- jsonData :: ActionM Lab3InputIntegralData
+        let maxN = 1000000
+        randomArray <- liftIO $ generateRandomValues maxN (lab3A requestData) (lab3B requestData)
+        payload <- liftIO $ processLab3IntegralData (MonteCarloMethod randomArray) requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab3Response {lab3Info = info, lab3Payload = payload}
+        json response
+
+    post "/api/lab/3/russianroulette" $ do
+        requestData <- jsonData :: ActionM Lab3InputIntegralData
+        let maxN = 1000000
+        valuesArray <- liftIO $ generateRandomValues maxN (lab3A requestData) (lab3B requestData)
+        rouletteArray <- liftIO $ generateRandomValues maxN 0 1
+        payload <- liftIO $ processLab3IntegralData (RussianRouletteMethod valuesArray rouletteArray) requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab3Response {lab3Info = info, lab3Payload = payload}
         json response

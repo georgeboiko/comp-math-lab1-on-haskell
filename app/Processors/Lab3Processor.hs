@@ -4,6 +4,7 @@ import Utils.EquationStorage
 import Types.SolverTypes
 import Types.ResponseTypes (Lab3OutputData(..))
 import Types.RequestTypes (Lab3InputIntegralData(..))
+import Utils.Generators
 
 processLab3IntegralData :: (IntegralSolver s) => s -> Lab3InputIntegralData -> IO Lab3OutputData
 processLab3IntegralData method input = do
