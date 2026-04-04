@@ -1,4 +1,4 @@
-module Utils.EquationStorage (Equation(..), SystemEquation(..), FunctionEq(..),
+module Utils.EquationStorage (Equation(..), SystemEquation(..), FunctionEq(..), Distribution(..), getDistFunction,
     getEquationById, getSystemById, getFunctionById,
     equations, systems, functions) where
 
@@ -19,8 +19,21 @@ data SystemEquation = SystemEq
     , systemLatex :: String
     }
 
+data Distribution = UniformDist
+    | NormalDist { mean :: Double, stdDev :: Double }
+    | ExponentialDist { lambda :: Double }
+
+getDistFunction :: Distribution -> Double -> Double -> (Double -> Double)
+getDistFunction UniformDist a b =
+    \_ -> 1 / (b - a)
+getDistFunction (ExponentialDist l) _ _ =
+    \x -> l * exp (- (l * x))
+getDistFunction (NormalDist m s) _ _ =
+    \x -> (1 / (s * sqrt (2 * pi))) * exp (- (0.5 * ((x - m) / s) ** 2))
+
 data FunctionEq = FunctionEq
     { functionEq :: Double -> Double
+    , distribution :: Distribution
     , badPoint :: Maybe Double
     , functionString :: String
     , functionLatex :: String
@@ -35,12 +48,12 @@ equations =
 
 functions :: [FunctionEq]
 functions =
-    [ FunctionEq (\x -> x**2 + 4*x + 2) Nothing "x^2 + 4*x + 2" "x^2 + 4x + 2"
-    , FunctionEq (\x -> x**2 - 4) Nothing "x^2 - 4" "x^2 - 4"
-    , FunctionEq (\x -> sin (2*x) + 5) Nothing "sin(2*x) + 5" "\\sin(2x) + 5"
-    , FunctionEq (1 /) (Just 0.0) "1/x" "\\frac{1}{x}"
-    , FunctionEq (\x -> 1 / sqrt x) (Just 0.0) "1/sqrt(x)" "\\frac{1}{\\sqrt{x}}"
-    , FunctionEq (\x -> sin x / x) (Just 0.0) "sin(x)/x" "\\frac{\\sin{x}}{x}"
+    [ FunctionEq (\x -> x**2 + 4*x + 2) UniformDist Nothing "x^2 + 4*x + 2" "x^2 + 4x + 2"
+    , FunctionEq (\x -> x**2 - 4) UniformDist Nothing "x^2 - 4" "x^2 - 4"
+    , FunctionEq (\x -> sin (2*x) + 5) UniformDist Nothing "sin(2*x) + 5" "\\sin(2x) + 5"
+    , FunctionEq (1 /) (ExponentialDist 1.5) (Just 0.0) "1/x" "\\frac{1}{x}"
+    , FunctionEq (\x -> 1 / sqrt x) (ExponentialDist 1.5) (Just 0.0) "1/sqrt(x)" "\\frac{1}{\\sqrt{x}}"
+    , FunctionEq (\x -> sin x / x) (NormalDist 0 1) (Just 0.0) "sin(x)/x" "\\frac{\\sin{x}}{x}"
     ]
 
 systems :: [SystemEquation]

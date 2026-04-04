@@ -1,4 +1,4 @@
-module Utils.MathUtils (hasRoot, isUniqueRoot, badPointsHandling) where
+module Utils.MathUtils (hasRoot, isUniqueRoot, badPointsHandling, transformToDist) where
 import Types.SolverTypes
 import Utils.EquationStorage
 
@@ -38,3 +38,16 @@ badPointsHandling func a b eps solverFunc =
     where
         f = functionEq func
         maybeC = badPoint func
+
+transformToDist :: Distribution -> Double -> Double -> [Double] -> [Double]
+transformToDist UniformDist a b vec = map (\u -> a + u * (b - a)) vec
+transformToDist (ExponentialDist l) _ _ vec = map (\u -> - (log (1 - u) / l)) vec
+transformToDist (NormalDist m s) a b (u1:u2:rest) = 
+    let r  = sqrt (- (2 * log u1))
+        th = 2 * pi * u2
+        z0 = r * cos th
+        z1 = r * sin th
+    in (m + z0 * s) : (m + z1 * s) : transformToDist (NormalDist m s) a b rest
+
+transformToDist _ _ _ [] = []
+transformToDist _ _ _ [_] = []

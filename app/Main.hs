@@ -18,6 +18,7 @@ import Methods.Lab3TrapezeMethod
 import Methods.Lab3SimpsonMethod
 import Methods.Lab3MonteCarloMethod
 import Methods.Lab3RussianRouletteMethod
+import Methods.Lab3ImportanceSamplingMethod
 import Utils.Generators
 import Utils.EquationStorage
 
@@ -34,13 +35,13 @@ main = scotty 8000 $ do
     post "/api/lab/1/generate" $ do
         requestData <-jsonData :: ActionM Lab1GenerateData
 
-        matrix <- liftIO $ generateMatrix (lab1GenN requestData) (lab1GenN requestData)
+        matrix <- liftIO $ generateMatrix (lab1GenN requestData)
         vector <- liftIO $ generateVector (lab1GenN requestData)
         let inputData = Lab1InputData {
               lab1N = lab1GenN requestData
             , lab1Matrix = matrix
             , lab1Vector = vector
-            , lab1Eps = lab1GenEps requestData 
+            , lab1Eps = lab1GenEps requestData
             }
         payload <- liftIO $ processLab1Data SystemSimpleItersMethod inputData
 
@@ -63,14 +64,14 @@ main = scotty 8000 $ do
                 , systemInfoLatex   = systemLatex sys
                 }) [0..] systems
         json response
-    
+
     post "/api/lab/2/chord" $ do
         requestData <- jsonData :: ActionM Lab2InputEquationData
         payload <- liftIO $ processLab2EquationData ChordMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab2Response {lab2Info = info, lab2Payload = payload}
         json response
-    
+
     post "/api/lab/2/newton" $ do
         requestData <- jsonData :: ActionM Lab2InputEquationData
         payload <- liftIO $ processLab2EquationData NewtonEqMethod requestData
@@ -120,14 +121,14 @@ main = scotty 8000 $ do
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab3Response {lab3Info = info, lab3Payload = payload}
         json response
-    
+
     post "/api/lab/3/trapeze" $ do
         requestData <- jsonData :: ActionM Lab3InputIntegralData
         payload <- liftIO $ processLab3IntegralData TrapezeMethod requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab3Response {lab3Info = info, lab3Payload = payload}
         json response
-    
+
     post "/api/lab/3/simpson" $ do
         requestData <- jsonData :: ActionM Lab3InputIntegralData
         payload <- liftIO $ processLab3IntegralData SimpsonMethod requestData
@@ -150,6 +151,17 @@ main = scotty 8000 $ do
         valuesArray <- liftIO $ generateRandomValues maxN (lab3A requestData) (lab3B requestData)
         rouletteArray <- liftIO $ generateRandomValues maxN 0 1
         payload <- liftIO $ processLab3IntegralData (RussianRouletteMethod valuesArray rouletteArray) requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab3Response {lab3Info = info, lab3Payload = payload}
+        json response
+
+    post "/api/lab/3/importancesampling" $ do
+        requestData <- jsonData :: ActionM Lab3InputIntegralData
+        let maxN = 1000000
+        let (a, b) = (lab3A requestData, lab3B requestData)
+        let currentDistribution = distribution $ getFunctionById (lab3FunctionId requestData)
+        randomArray <- liftIO $ generateDistributionValues currentDistribution maxN a b
+        payload <- liftIO $ processLab3IntegralData (ImportanceSamplingMethod randomArray (getDistFunction currentDistribution a b)) requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab3Response {lab3Info = info, lab3Payload = payload}
         json response
