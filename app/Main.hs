@@ -8,6 +8,7 @@ import Types.ResponseTypes
 import Processors.Lab1Processor
 import Processors.Lab2Processor
 import Processors.Lab3Processor
+import Processors.Lab4Processor
 import Methods.Lab1SimpleIterationsMethod
 import Methods.Lab2ChordMethod
 import Methods.Lab2NewtonMethod
@@ -19,6 +20,12 @@ import Methods.Lab3SimpsonMethod
 import Methods.Lab3MonteCarloMethod
 import Methods.Lab3RussianRouletteMethod
 import Methods.Lab3ImportanceSamplingMethod
+import Methods.Lab4LinearMethod
+import Methods.Lab4QuadraticMethod
+import Methods.Lab4CubicMethod
+import Methods.Lab4ExponentialMethod
+import Methods.Lab4LogarithmicMethod
+import Methods.Lab4PowerMethod
 import Utils.Generators
 import Utils.EquationStorage
 
@@ -164,6 +171,55 @@ main = scotty 8000 $ do
         payload <- liftIO $ processLab3IntegralData (ImportanceSamplingMethod randomArray (getDistFunction currentDistribution a b)) requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab3Response {lab3Info = info, lab3Payload = payload}
+        json response
+
+    post "/api/lab/4/linear" $ do
+        requestData <- jsonData :: ActionM Lab4InputData
+        payload <- liftIO $ processLab4Data LinearApprox requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab4Response {lab4Info = info, lab4Payload = payload}
+        json response
+
+    post "/api/lab/4/quadratic" $ do
+        requestData <- jsonData :: ActionM Lab4InputData
+        payload <- liftIO $ processLab4Data QuadraticApprox requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab4Response {lab4Info = info, lab4Payload = payload}
+        json response
+
+    post "/api/lab/4/cubic" $ do
+        requestData <- jsonData :: ActionM Lab4InputData
+        payload <- liftIO $ processLab4Data CubicApprox requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab4Response {lab4Info = info, lab4Payload = payload}
+        json response
+
+    post "/api/lab/4/exponential" $ do
+        requestData <- jsonData :: ActionM Lab4InputData
+        payload <- liftIO $ processLab4Data ExponentialApprox requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab4Response {lab4Info = info, lab4Payload = payload}
+        json response
+
+    post "/api/lab/4/logarithmic" $ do
+        requestData <- jsonData :: ActionM Lab4InputData
+        payload <- liftIO $ processLab4Data LogarithmicApprox requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab4Response {lab4Info = info, lab4Payload = payload}
+        json response
+
+    post "/api/lab/4/power" $ do
+        requestData <- jsonData :: ActionM Lab4InputData
+        payload <- liftIO $ processLab4Data PowerApprox requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab4Response {lab4Info = info, lab4Payload = payload}
+        json response
+
+    post "/api/lab/4/all" $ do
+        requestData <- jsonData :: ActionM Lab4InputData
+        payloads <- liftIO $ processLab4AllData requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab4AllResponse {lab4AllInfo = info, lab4AllPayload = payloads}
         json response
 
     get "/api/health/check" $ do
