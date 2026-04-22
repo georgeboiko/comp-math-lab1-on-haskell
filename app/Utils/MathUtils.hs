@@ -91,33 +91,40 @@ pearsonR pts =
     in if den == 0 then 0 else num / den
 
 gaussianSolve :: Matrix -> Vector -> Vector
-gaussianSolve mat rhs = backSubstitute $ forwardElim augmented
-    where
-        augmented = zipWith (\row r -> row ++ [r]) mat rhs
+gaussianSolve mat rhs =
+    let n = length mat
+        aug = zipWith (\row r -> row ++ [r]) mat rhs
+        eliminated = foldl (eliminateCol n) aug [0 .. n - 1]
+    in backSub n eliminated
 
-forwardElim :: [[Double]] -> [[Double]]
-forwardElim [] = []
-forwardElim rows =
-    let indexed = zip [0..] rows
-        pivotIdx = fst $ maximumBy (comparing (\(_, r) -> abs (head r))) indexed
-        (before, rest) = splitAt pivotIdx rows
-    in case rest of
-        [] -> rows
-        (pivotRow : after) ->
-            let remaining = before ++ after
-                eliminate r =
-                    let pv = head pivotRow
-                        factor = head r / pv
-                    in zipWith (\a b -> a - factor * b) r pivotRow
-            in pivotRow : forwardElim (map eliminate remaining)
+eliminateCol :: Int -> [[Double]] -> Int -> [[Double]]
+eliminateCol n rows k =
+    let pivotIdx = k + snd (maximumBy (comparing fst) (zip (map (\i -> abs ((rows !! i) !! k)) [k .. n-1]) [0..]))
+        swapped = swapRows k pivotIdx rows
+        pivotRow = swapped !! k
+        pv = pivotRow !! k
+        elim i row
+            | i <= k = row
+            | otherwise =
+                let factor = (row !! k) / pv
+                in zipWith (\a b -> a - factor * b) row pivotRow
+    in zipWith elim [0..] swapped
 
-backSubstitute :: [[Double]] -> [Double]
-backSubstitute rows = foldr step [] (reverse rows)
+swapRows :: Int -> Int -> [[a]] -> [[a]]
+swapRows i j rows
+    | i == j = rows
+    | otherwise =
+        [ if k == i then rows !! j
+          else if k == j then rows !! i
+          else rows !! k
+        | k <- [0 .. length rows - 1] ]
+
+backSub :: Int -> [[Double]] -> [Double]
+backSub n rows = foldl step [] [n-1, n-2 .. 0]
     where
-        step row acc =
-            let n = length acc
-                coeffs = init row
+        step acc i =
+            let row = rows !! i
                 rhs' = last row
-                known = sum $ zipWith (*) (reverse $ take n $ reverse $ init coeffs) acc
-                val = (rhs' - known) / last coeffs
+                known = sum [ (row !! j) * (acc !! (j - i - 1)) | j <- [i+1 .. n-1] ]
+                val = (rhs' - known) / (row !! i)
             in val : acc
