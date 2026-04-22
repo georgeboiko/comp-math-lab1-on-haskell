@@ -5,8 +5,6 @@ import Utils.MathUtils (computeApproxMetrics, gaussianSolve)
 
 data CubicApprox = CubicApprox
 
--- phi(x) = a0 + a1*x + a2*x^2 + a3*x^3
--- Normal equations solved via Gaussian elimination with partial pivoting (4x4 system)
 instance ApproxSolver CubicApprox where
     solveApprox _ pts =
         let xs = map fst pts

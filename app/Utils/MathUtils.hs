@@ -90,8 +90,6 @@ pearsonR pts =
         den = denX * denY
     in if den == 0 then 0 else num / den
 
--- Gaussian elimination with partial pivoting.
--- Solves mat * x = rhs, returns x.
 gaussianSolve :: Matrix -> Vector -> Vector
 gaussianSolve mat rhs = backSubstitute $ forwardElim augmented
     where

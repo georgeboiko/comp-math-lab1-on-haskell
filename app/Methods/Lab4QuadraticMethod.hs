@@ -5,8 +5,6 @@ import Utils.MathUtils (computeApproxMetrics, gaussianSolve)
 
 data QuadraticApprox = QuadraticApprox
 
--- phi(x) = a0 + a1*x + a2*x^2
--- Normal equations solved via Gaussian elimination with partial pivoting (3x3 system)
 instance ApproxSolver QuadraticApprox where
     solveApprox _ pts =
         let xs = map fst pts
