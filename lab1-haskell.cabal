@@ -74,9 +74,17 @@ executable lab1-haskell
         Methods.Lab3MonteCarloMethod,
         Methods.Lab3RussianRouletteMethod,
         Methods.Lab3ImportanceSamplingMethod,
+        Methods.Lab4Utils,
+        Methods.Lab4LinearMethod,
+        Methods.Lab4QuadraticMethod,
+        Methods.Lab4CubicMethod,
+        Methods.Lab4ExponentialMethod,
+        Methods.Lab4LogarithmicMethod,
+        Methods.Lab4PowerMethod,
         Processors.Lab1Processor,
         Processors.Lab2Processor,
-        Processors.Lab3Processor
+        Processors.Lab3Processor,
+        Processors.Lab4Processor
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
