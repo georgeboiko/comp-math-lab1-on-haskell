@@ -1,9 +1,11 @@
 module Utils.MathUtils (hasRoot, isUniqueRoot, badPointsHandling, transformToDist,
-    linearCoeffs2x2, computeApproxMetrics, pearsonR) where
+    linearCoeffs2x2, computeApproxMetrics, pearsonR, gaussianSolve) where
 
 import Types.SolverTypes
 import Types.MathTypes
 import Utils.EquationStorage
+import Data.List (maximumBy)
+import Data.Ord (comparing)
 
 hasRoot :: (Double -> Double) -> Double -> Double -> Bool
 hasRoot f a b = f a * f b < 0
@@ -87,3 +89,37 @@ pearsonR pts =
         denY = sqrt $ sum (map (\y -> (y - yMean) ** 2) ys)
         den = denX * denY
     in if den == 0 then 0 else num / den
+
+-- Gaussian elimination with partial pivoting.
+-- Solves mat * x = rhs, returns x.
+gaussianSolve :: Matrix -> Vector -> Vector
+gaussianSolve mat rhs = backSubstitute $ forwardElim augmented
+    where
+        augmented = zipWith (\row r -> row ++ [r]) mat rhs
+
+forwardElim :: [[Double]] -> [[Double]]
+forwardElim [] = []
+forwardElim rows =
+    let indexed = zip [0..] rows
+        pivotIdx = fst $ maximumBy (comparing (\(_, r) -> abs (head r))) indexed
+        (before, rest) = splitAt pivotIdx rows
+    in case rest of
+        [] -> rows
+        (pivotRow : after) ->
+            let remaining = before ++ after
+                eliminate r =
+                    let pv = head pivotRow
+                        factor = head r / pv
+                    in zipWith (\a b -> a - factor * b) r pivotRow
+            in pivotRow : forwardElim (map eliminate remaining)
+
+backSubstitute :: [[Double]] -> [Double]
+backSubstitute rows = foldr step [] (reverse rows)
+    where
+        step row acc =
+            let n = length acc
+                coeffs = init row
+                rhs' = last row
+                known = sum $ zipWith (*) (reverse $ take n $ reverse $ init coeffs) acc
+                val = (rhs' - known) / last coeffs
+            in val : acc

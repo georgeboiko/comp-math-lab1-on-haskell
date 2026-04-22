@@ -1,11 +1,12 @@
 module Methods.Lab4CubicMethod (CubicApprox(..)) where
 
 import Types.SolverTypes
-import Utils.MathUtils (computeApproxMetrics)
-import Methods.Lab1SimpleIterationsMethod (SystemSimpleItersMethod(..))
+import Utils.MathUtils (computeApproxMetrics, gaussianSolve)
 
 data CubicApprox = CubicApprox
 
+-- phi(x) = a0 + a1*x + a2*x^2 + a3*x^3
+-- Normal equations solved via Gaussian elimination with partial pivoting (4x4 system)
 instance ApproxSolver CubicApprox where
     solveApprox _ pts =
         let xs = map fst pts
@@ -21,14 +22,13 @@ instance ApproxSolver CubicApprox where
             sxy = sum (zipWith (*) xs ys)
             sx2y = sum (zipWith (\x y -> x ** 2 * y) xs ys)
             sx3y = sum (zipWith (\x y -> x ** 3 * y) xs ys)
-            mat = [[fromIntegral n, sx, sx2, sx3],
-                    [sx, sx2, sx3, sx4],
-                    [sx2, sx3, sx4, sx5],
-                    [sx3, sx4, sx5, sx6]
-                   ]
+            mat = [ [fromIntegral n, sx, sx2, sx3]
+                  , [sx, sx2, sx3, sx4]
+                  , [sx2, sx3, sx4, sx5]
+                  , [sx3, sx4, sx5, sx6]
+                  ]
             rhs = [sy, sxy, sx2y, sx3y]
-            result = solveLinearSystem SystemSimpleItersMethod mat rhs 1e-10
-            coeffs = linCalculatedVector result
+            coeffs = gaussianSolve mat rhs
             a0 = coeffs !! 0
             a1 = coeffs !! 1
             a2 = coeffs !! 2
@@ -36,7 +36,7 @@ instance ApproxSolver CubicApprox where
             phi = map (\x -> a0 + a1 * x + a2 * x ** 2 + a3 * x ** 3) xs
             (s, delta, r2, phiVals, resids) = computeApproxMetrics pts phi
         in SolverApproxOutputData
-            { approxIsSuccessfully = linIsSystemSucessfully result
+            { approxIsSuccessfully = True
             , approxName = "Cubic"
             , approxFormula = ""
             , approxCoefficients = coeffs
@@ -46,5 +46,5 @@ instance ApproxSolver CubicApprox where
             , approxPearsonR = 0
             , approxPhiValues = phiVals
             , approxResiduals = resids
-            , approxErrMsg = linInformationSystemMsg result
+            , approxErrMsg = ""
             }
