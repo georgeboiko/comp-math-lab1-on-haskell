@@ -1,5 +1,8 @@
-module Utils.MathUtils (hasRoot, isUniqueRoot, badPointsHandling, transformToDist) where
+module Utils.MathUtils (hasRoot, isUniqueRoot, badPointsHandling, transformToDist,
+    linearCoeffs2x2, computeApproxMetrics, pearsonR) where
+
 import Types.SolverTypes
+import Types.MathTypes
 import Utils.EquationStorage
 
 hasRoot :: (Double -> Double) -> Double -> Double -> Bool
@@ -51,3 +54,36 @@ transformToDist (NormalDist m s) a b (u1:u2:rest) =
 
 transformToDist _ _ _ [] = []
 transformToDist _ _ _ [_] = []
+
+linearCoeffs2x2 :: Matrix -> Vector -> (Double, Double)
+linearCoeffs2x2 [[sxx, sx], [_, n]] [sxy, sy] =
+    let det = sxx * n - sx * sx
+        a = (sxy * n - sx * sy) / det
+        b = (sxx * sy - sx * sxy) / det
+    in (a, b)
+linearCoeffs2x2 _ _ = (0, 0)
+
+computeApproxMetrics :: [(Double, Double)] -> [Double] -> (Double, Double, Double, [Double], [Double])
+computeApproxMetrics pts phi =
+    let ys = map snd pts
+        n = length pts
+        residuals = zipWith (-) phi ys
+        s = sum (map (** 2) residuals)
+        delta = sqrt (s / fromIntegral n)
+        yMean = sum ys / fromIntegral n
+        ssTot = sum (map (\y -> (y - yMean) ** 2) ys)
+        r2 = if ssTot == 0 then 1 else 1 - s / ssTot
+    in (s, delta, r2, phi, residuals)
+
+pearsonR :: [(Double, Double)] -> Double
+pearsonR pts =
+    let n = fromIntegral (length pts)
+        xs = map fst pts
+        ys = map snd pts
+        xMean = sum xs / n
+        yMean = sum ys / n
+        num = sum (zipWith (\x y -> (x - xMean) * (y - yMean)) xs ys)
+        denX = sqrt $ sum (map (\x -> (x - xMean) ** 2) xs)
+        denY = sqrt $ sum (map (\y -> (y - yMean) ** 2) ys)
+        den = denX * denY
+    in if den == 0 then 0 else num / den
