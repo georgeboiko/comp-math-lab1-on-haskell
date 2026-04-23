@@ -1,5 +1,5 @@
 module Utils.MathUtils (hasRoot, isUniqueRoot, badPointsHandling, transformToDist,
-    linearCoeffs2x2, computeApproxMetrics, pearsonR, gaussianSolve) where
+    linearCoeffs2x2, computeApproxMetrics, pearsonR, gaussianSolve, calculateN) where
 
 import Types.SolverTypes
 import Types.MathTypes
@@ -128,3 +128,9 @@ backSub n rows = foldl step [] [n-1, n-2 .. 0]
                 known = sum [ (row !! j) * (acc !! (j - i - 1)) | j <- [i+1 .. n-1] ]
                 val = (rhs' - known) / (row !! i)
             in val : acc
+
+calculateN :: Double -> Int
+calculateN eps = 
+    let required = floor (1 / eps**2) + 1
+        maxSafeN = 10000000
+    in min required maxSafeN
