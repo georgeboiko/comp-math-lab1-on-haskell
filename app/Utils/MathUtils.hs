@@ -1,6 +1,11 @@
-module Utils.MathUtils (hasRoot, isUniqueRoot, badPointsHandling, transformToDist) where
+module Utils.MathUtils (hasRoot, isUniqueRoot, badPointsHandling, transformToDist,
+    linearCoeffs2x2, computeApproxMetrics, pearsonR, gaussianSolve, calculateN) where
+
 import Types.SolverTypes
+import Types.MathTypes
 import Utils.EquationStorage
+import Data.List (maximumBy)
+import Data.Ord (comparing)
 
 hasRoot :: (Double -> Double) -> Double -> Double -> Bool
 hasRoot f a b = f a * f b < 0
@@ -51,3 +56,81 @@ transformToDist (NormalDist m s) a b (u1:u2:rest) =
 
 transformToDist _ _ _ [] = []
 transformToDist _ _ _ [_] = []
+
+linearCoeffs2x2 :: Matrix -> Vector -> (Double, Double)
+linearCoeffs2x2 [[sxx, sx], [_, n]] [sxy, sy] =
+    let det = sxx * n - sx * sx
+        a = (sxy * n - sx * sy) / det
+        b = (sxx * sy - sx * sxy) / det
+    in (a, b)
+linearCoeffs2x2 _ _ = (0, 0)
+
+computeApproxMetrics :: [(Double, Double)] -> [Double] -> (Double, Double, Double, [Double], [Double])
+computeApproxMetrics pts phi =
+    let ys = map snd pts
+        n = length pts
+        residuals = zipWith (-) phi ys
+        s = sum (map (** 2) residuals)
+        delta = sqrt (s / fromIntegral n)
+        yMean = sum ys / fromIntegral n
+        ssTot = sum (map (\y -> (y - yMean) ** 2) ys)
+        r2 = if ssTot == 0 then 1 else 1 - s / ssTot
+    in (s, delta, r2, phi, residuals)
+
+pearsonR :: [(Double, Double)] -> Double
+pearsonR pts =
+    let n = fromIntegral (length pts)
+        xs = map fst pts
+        ys = map snd pts
+        xMean = sum xs / n
+        yMean = sum ys / n
+        num = sum (zipWith (\x y -> (x - xMean) * (y - yMean)) xs ys)
+        denX = sqrt $ sum (map (\x -> (x - xMean) ** 2) xs)
+        denY = sqrt $ sum (map (\y -> (y - yMean) ** 2) ys)
+        den = denX * denY
+    in if den == 0 then 0 else num / den
+
+gaussianSolve :: Matrix -> Vector -> Vector
+gaussianSolve mat rhs =
+    let n = length mat
+        aug = zipWith (\row r -> row ++ [r]) mat rhs
+        eliminated = foldl (eliminateCol n) aug [0 .. n - 1]
+    in backSub n eliminated
+
+eliminateCol :: Int -> [[Double]] -> Int -> [[Double]]
+eliminateCol n rows k =
+    let pivotIdx = k + snd (maximumBy (comparing fst) (zip (map (\i -> abs ((rows !! i) !! k)) [k .. n-1]) [0..]))
+        swapped = swapRows k pivotIdx rows
+        pivotRow = swapped !! k
+        pv = pivotRow !! k
+        elim i row
+            | i <= k = row
+            | otherwise =
+                let factor = (row !! k) / pv
+                in zipWith (\a b -> a - factor * b) row pivotRow
+    in zipWith elim [0..] swapped
+
+swapRows :: Int -> Int -> [[a]] -> [[a]]
+swapRows i j rows
+    | i == j = rows
+    | otherwise =
+        [ if k == i then rows !! j
+          else if k == j then rows !! i
+          else rows !! k
+        | k <- [0 .. length rows - 1] ]
+
+backSub :: Int -> [[Double]] -> [Double]
+backSub n rows = foldl step [] [n-1, n-2 .. 0]
+    where
+        step acc i =
+            let row = rows !! i
+                rhs' = last row
+                known = sum [ (row !! j) * (acc !! (j - i - 1)) | j <- [i+1 .. n-1] ]
+                val = (rhs' - known) / (row !! i)
+            in val : acc
+
+calculateN :: Double -> Int
+calculateN eps = 
+    let required = floor (1 / eps**2) + 1
+        maxSafeN = 10000000
+    in min required maxSafeN

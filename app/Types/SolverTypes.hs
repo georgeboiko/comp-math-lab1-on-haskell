@@ -1,7 +1,9 @@
 module Types.SolverTypes (SolverEquationOutputData(..), SolverLinearSystemOutputData(..),
     SolverNonLinearSystemOutputData(..), SolverIntegralOutputData(..),
+    SolverApproxOutputData(..),
     EquationSolver(..), LinearSystemSolver(..),
-    NonLinearSystemSolver(..), IntegralSolver(..)) where
+    NonLinearSystemSolver(..), IntegralSolver(..),
+    ApproxSolver(..)) where
 
 import Utils.EquationStorage (Equation, SystemEquation, FunctionEq)
 import Types.MathTypes
@@ -61,8 +63,27 @@ class NonLinearSystemSolver s where
 
 class IntegralSolver s where
     solveIntegral :: s
-        -> FunctionEq 
+        -> FunctionEq
         -> Double
         -> Double
         -> Double
         -> SolverIntegralOutputData
+
+data SolverApproxOutputData = SolverApproxOutputData
+    { approxIsSuccessfully :: Bool
+    , approxName           :: String
+    , approxFormula        :: String
+    , approxCoefficients   :: [Double]
+    , approxDeviationS     :: Double
+    , approxStdDeviation   :: Double
+    , approxDetermination  :: Double
+    , approxPearsonR       :: Double
+    , approxPhiValues      :: [Double]
+    , approxResiduals      :: [Double]
+    , approxErrMsg         :: String
+    }
+
+class ApproxSolver s where
+    solveApprox :: s
+        -> [(Double, Double)]
+        -> SolverApproxOutputData

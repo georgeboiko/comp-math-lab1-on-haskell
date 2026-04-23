@@ -74,16 +74,23 @@ executable lab1-haskell
         Methods.Lab3MonteCarloMethod,
         Methods.Lab3RussianRouletteMethod,
         Methods.Lab3ImportanceSamplingMethod,
+        Methods.Lab4LinearMethod,
+        Methods.Lab4QuadraticMethod,
+        Methods.Lab4CubicMethod,
+        Methods.Lab4ExponentialMethod,
+        Methods.Lab4LogarithmicMethod,
+        Methods.Lab4PowerMethod,
         Processors.Lab1Processor,
         Processors.Lab2Processor,
-        Processors.Lab3Processor
+        Processors.Lab3Processor,
+        Processors.Lab4Processor
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
     build-depends:
-        base ^>=4.22.0.0,
+        base ^>=4.18.0.0,
         random,
         directory,
         scotty,

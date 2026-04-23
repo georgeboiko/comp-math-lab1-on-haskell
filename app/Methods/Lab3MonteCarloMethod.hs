@@ -8,7 +8,6 @@ data MonteCarloMethod = MonteCarloMethod { randomPoints :: Vector }
 instance IntegralSolver MonteCarloMethod where
     solveIntegral (MonteCarloMethod points) func a b eps =
         let
-            n = floor (1 / eps**2) + 1
-            values = take n points
-            ans = (b - a) * sum (map (functionEq func) values) / fromIntegral n
+            n = length points
+            ans = (b - a) * sum (map (functionEq func) points) / fromIntegral n
         in SolverIntegralOutputData True ans eps n "ok"

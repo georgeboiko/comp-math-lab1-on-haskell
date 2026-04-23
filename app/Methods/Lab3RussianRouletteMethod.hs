@@ -8,12 +8,8 @@ data RussianRouletteMethod = RussianRouletteMethod { randomPoints :: Vector, ran
 instance IntegralSolver RussianRouletteMethod where
     solveIntegral (RussianRouletteMethod points roulette) func a b eps =
         let
-            n = floor (1 / eps**2) + 1
             q = 0.9
-            pointsValues = take n points
-            rouletteValues = take n roulette
-
+            n = length points
             calc x r = if r < (1 - q) then 0 else (functionEq func x) / q
-            
-            ans = (b - a) * sum (zipWith calc pointsValues rouletteValues) / fromIntegral n
+            ans = (b - a) * sum (zipWith calc points roulette) / fromIntegral n
         in SolverIntegralOutputData True ans eps n "ok"
