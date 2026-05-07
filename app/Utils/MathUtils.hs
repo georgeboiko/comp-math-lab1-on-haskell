@@ -1,5 +1,7 @@
 module Utils.MathUtils (hasRoot, isUniqueRoot, badPointsHandling, transformToDist,
-    linearCoeffs2x2, computeApproxMetrics, pearsonR, gaussianSolve) where
+    linearCoeffs2x2, computeApproxMetrics, pearsonR, gaussianSolve,
+    buildDividedDiffTable, buildFiniteDiffTable, isUniformGrid,
+    fallingProduct, risingProduct) where
 
 import Types.SolverTypes
 import Types.MathTypes
@@ -128,3 +130,38 @@ backSub n rows = foldl step [] [n-1, n-2 .. 0]
                 known = sum [ (row !! j) * (acc !! (j - i - 1)) | j <- [i+1 .. n-1] ]
                 val = (rhs' - known) / (row !! i)
             in val : acc
+
+buildDividedDiffTable :: [(Double, Double)] -> [[Double]]
+buildDividedDiffTable pts = go (map snd pts)
+    where
+        xs = map fst pts
+        n = length pts
+        go current
+            | null current = []
+            | otherwise = current : go next
+            where
+                order = n - length current + 1
+                next =
+                    [ (current !! (i + 1) - current !! i) / (xs !! (i + order) - xs !! i)
+                    | i <- [0 .. length current - 2]
+                    ]
+
+buildFiniteDiffTable :: [(Double, Double)] -> [[Double]]
+buildFiniteDiffTable pts = takeWhile (not . null) $ iterate diffOnce (map snd pts)
+    where
+        diffOnce row = zipWith (-) (tail row) row
+
+isUniformGrid :: [(Double, Double)] -> Bool
+isUniformGrid pts
+    | length pts < 2 = True
+    | otherwise = all (\d -> abs (d - step) < 1e-9) diffs
+    where
+        xs = map fst pts
+        diffs = zipWith (-) (tail xs) xs
+        step = head diffs
+
+fallingProduct :: Double -> Int -> Double
+fallingProduct t k = product [t - fromIntegral i | i <- [0 .. k - 1]]
+
+risingProduct :: Double -> Int -> Double
+risingProduct t k = product [t + fromIntegral i | i <- [0 .. k - 1]]
