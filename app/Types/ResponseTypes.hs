@@ -5,7 +5,8 @@ module Types.ResponseTypes (Response(..),
     Lab2OutputSystemData(..), Lab2SystemResponse(..),
     Lab2EquationData(..), Lab2SystemData(..),
     Lab3OutputData(..), Lab3Response(..), Lab3IntegralData(..),
-    Lab4OutputData(..), Lab4Response(..), Lab4AllResponse(..)) where
+    Lab4OutputData(..), Lab4Response(..), Lab4AllResponse(..),
+    Lab5OutputData(..), Lab5Response(..)) where
 import GHC.Generics (Generic)
 import Data.Aeson (ToJSON)
 import Types.MathTypes
@@ -147,3 +148,21 @@ data Lab4AllResponse = Lab4AllResponse
     } deriving (Show, Generic)
 
 instance ToJSON Lab4AllResponse
+
+data Lab5OutputData = Lab5OutputData
+    { lab5IsSuccess   :: Bool
+    , lab5MethodName  :: String
+    , lab5Formula     :: String
+    , lab5Value       :: Double
+    , lab5DiffTable   :: [[Double]]
+    , lab5ErrMessage  :: String
+    } deriving (Show, Generic)
+
+instance ToJSON Lab5OutputData
+
+data Lab5Response = Lab5Response
+    { lab5Info    :: Response
+    , lab5Payload :: Lab5OutputData
+    } deriving (Show, Generic)
+
+instance ToJSON Lab5Response

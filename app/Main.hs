@@ -9,6 +9,7 @@ import Processors.Lab1Processor
 import Processors.Lab2Processor
 import Processors.Lab3Processor
 import Processors.Lab4Processor
+import Processors.Lab5Processor
 import Methods.Lab1SimpleIterationsMethod
 import Methods.Lab2ChordMethod
 import Methods.Lab2NewtonMethod
@@ -26,6 +27,11 @@ import Methods.Lab4CubicMethod
 import Methods.Lab4ExponentialMethod
 import Methods.Lab4LogarithmicMethod
 import Methods.Lab4PowerMethod
+import Methods.Lab5LagrangeMethod
+import Methods.Lab5NewtonDividedMethod
+import Methods.Lab5NewtonFiniteMethod
+import Methods.Lab5StirlingMethod
+import Methods.Lab5BesselMethod
 import Utils.Generators
 import Utils.EquationStorage
 
@@ -220,6 +226,41 @@ main = scotty 8000 $ do
         payloads <- liftIO $ processLab4AllData requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab4AllResponse {lab4AllInfo = info, lab4AllPayload = payloads}
+        json response
+
+    post "/api/lab/5/lagrange" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data LagrangeMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/newton/divided" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data NewtonDividedMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/newton/finite" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data NewtonFiniteMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/stirling" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data StirlingMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/bessel" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data BesselMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
         json response
 
     get "/api/health/check" $ do

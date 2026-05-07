@@ -1,9 +1,9 @@
 module Types.SolverTypes (SolverEquationOutputData(..), SolverLinearSystemOutputData(..),
     SolverNonLinearSystemOutputData(..), SolverIntegralOutputData(..),
-    SolverApproxOutputData(..),
+    SolverApproxOutputData(..), SolverInterpolationOutputData(..),
     EquationSolver(..), LinearSystemSolver(..),
     NonLinearSystemSolver(..), IntegralSolver(..),
-    ApproxSolver(..)) where
+    ApproxSolver(..), InterpolationSolver(..)) where
 
 import Utils.EquationStorage (Equation, SystemEquation, FunctionEq)
 import Types.MathTypes
@@ -83,7 +83,22 @@ data SolverApproxOutputData = SolverApproxOutputData
     , approxErrMsg         :: String
     }
 
+data SolverInterpolationOutputData = SolverInterpolationOutputData
+    { interpolationIsSuccessfully :: Bool
+    , interpolationMethodName     :: String
+    , interpolationFormula        :: String
+    , interpolationValue          :: Double
+    , interpolationDiffTable      :: [[Double]]
+    , interpolationErrMsg         :: String
+    }
+
 class ApproxSolver s where
     solveApprox :: s
         -> [(Double, Double)]
         -> SolverApproxOutputData
+
+class InterpolationSolver s where
+    solveInterpolation :: s
+        -> [(Double, Double)]
+        -> Double
+        -> SolverInterpolationOutputData
