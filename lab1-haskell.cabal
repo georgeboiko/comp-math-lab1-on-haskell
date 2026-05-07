@@ -80,10 +80,16 @@ executable lab1-haskell
         Methods.Lab4ExponentialMethod,
         Methods.Lab4LogarithmicMethod,
         Methods.Lab4PowerMethod,
+        Methods.Lab5LagrangeMethod,
+        Methods.Lab5NewtonDividedMethod,
+        Methods.Lab5NewtonFiniteMethod,
+        Methods.Lab5StirlingMethod,
+        Methods.Lab5BesselMethod,
         Processors.Lab1Processor,
         Processors.Lab2Processor,
         Processors.Lab3Processor,
-        Processors.Lab4Processor
+        Processors.Lab4Processor,
+        Processors.Lab5Processor
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
