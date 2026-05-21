@@ -1,9 +1,11 @@
 module Types.SolverTypes (SolverEquationOutputData(..), SolverLinearSystemOutputData(..),
     SolverNonLinearSystemOutputData(..), SolverIntegralOutputData(..),
     SolverApproxOutputData(..), SolverInterpolationOutputData(..),
+    SolverODEOutputData(..),
     EquationSolver(..), LinearSystemSolver(..),
     NonLinearSystemSolver(..), IntegralSolver(..),
-    ApproxSolver(..), InterpolationSolver(..)) where
+    ApproxSolver(..), InterpolationSolver(..),
+    ODESolver(..)) where
 
 import Utils.EquationStorage (Equation, SystemEquation, FunctionEq)
 import Types.MathTypes
@@ -102,3 +104,26 @@ class InterpolationSolver s where
         -> [(Double, Double)]
         -> Double
         -> SolverInterpolationOutputData
+
+data SolverODEOutputData = SolverODEOutputData
+    { odeIsSuccessfully :: Bool
+    , odeMethodName     :: String
+    , odeOdeString      :: String
+    , odeOdeLatex       :: String
+    , odeTable          :: [(Double, Double, Double, Double)]
+    , odeRungeError     :: Double
+    , odeErrMsg         :: String
+    }
+
+class ODESolver s where
+    solveODE :: s
+        -> (Double -> Double -> Double)
+        -> (Double -> Double)
+        -> String
+        -> String
+        -> Double
+        -> Double
+        -> Double
+        -> Double
+        -> Double
+        -> SolverODEOutputData

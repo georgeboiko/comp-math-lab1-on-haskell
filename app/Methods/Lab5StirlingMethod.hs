@@ -14,14 +14,6 @@ safeIndex xs i
     | i < 0 || i >= length xs = Nothing
     | otherwise = Just (xs !! i)
 
-safeHead :: [a] -> Maybe a
-safeHead [] = Nothing
-safeHead (x:_) = Just x
-
-avg :: Maybe Double -> Maybe Double -> Maybe Double
-avg (Just a) (Just b) = Just ((a + b) / 2)
-avg _ _ = Nothing
-
 instance InterpolationSolver StirlingMethod where
     solveInterpolation _ pts x =
         let xs = map fst pts

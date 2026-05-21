@@ -1,6 +1,7 @@
 module Utils.EquationStorage (Equation(..), SystemEquation(..), FunctionEq(..), Distribution(..), getDistFunction,
     getEquationById, getSystemById, getFunctionById,
-    equations, systems, functions) where
+    equations, systems, functions,
+    OdeEquation(..), odeEquations, getOdeEquationById) where
 
 import Types.MathTypes
 
@@ -92,3 +93,45 @@ getFunctionById :: Int -> FunctionEq
 getFunctionById index
     | index >= 0 = functions !! index
     | otherwise = head functions
+
+data OdeEquation = OdeEq
+    { odeF :: Double -> Double -> Double
+    , odeExact :: Double -> Double
+    , odeFStr :: String
+    , odeFLatex :: String
+    , odeExactStr :: String
+    , odeExactLtx :: String
+    }
+
+odeEquations :: [OdeEquation]
+odeEquations =
+    [ OdeEq
+        { odeF = \x y -> y + (1 + x) * y * y
+        , odeExact = \x -> -(1 / (x * exp (x - 1)))
+        , odeFStr = "y' = y + (1+x)*y^2"
+        , odeFLatex = "y' = y + (1+x)y^2"
+        , odeExactStr = "y = -1 / (x * e^(x-1))"
+        , odeExactLtx = "y = -\\dfrac{1}{x e^{x-1}}"
+        }
+    , OdeEq
+        { odeF = \x y -> x + y
+        , odeExact = \x -> 2 * exp x - x - 1
+        , odeFStr = "y' = x + y"
+        , odeFLatex = "y' = x + y"
+        , odeExactStr = "y = 2*e^x - x - 1"
+        , odeExactLtx = "y = 2e^x - x - 1"
+        }
+    , OdeEq
+        { odeF = \x y -> -2 * x * y
+        , odeExact = \x -> exp (-(x * x))
+        , odeFStr = "y' = -2*x*y"
+        , odeFLatex = "y' = -2xy"
+        , odeExactStr = "y = e^(-x^2)"
+        , odeExactLtx = "y = e^{-x^2}"
+        }
+    ]
+
+getOdeEquationById :: Int -> OdeEquation
+getOdeEquationById index
+    | index >= 0 && index < length odeEquations = odeEquations !! index
+    | otherwise = head odeEquations
