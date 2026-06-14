@@ -9,6 +9,8 @@ import Processors.Lab1Processor
 import Processors.Lab2Processor
 import Processors.Lab3Processor
 import Processors.Lab4Processor
+import Processors.Lab5Processor
+import Processors.Lab6Processor
 import Methods.Lab1SimpleIterationsMethod
 import Methods.Lab2ChordMethod
 import Methods.Lab2NewtonMethod
@@ -26,6 +28,16 @@ import Methods.Lab4CubicMethod
 import Methods.Lab4ExponentialMethod
 import Methods.Lab4LogarithmicMethod
 import Methods.Lab4PowerMethod
+import Methods.Lab5LagrangeMethod
+import Methods.Lab5NewtonDividedMethod
+import Methods.Lab5NewtonDividedBackwardMethod
+import Methods.Lab5NewtonFiniteMethod
+import Methods.Lab5NewtonBackwardMethod
+import Methods.Lab5StirlingMethod
+import Methods.Lab5BesselMethod
+import Methods.Lab6EulerMethod
+import Methods.Lab6RungeKuttaMethod
+import Methods.Lab6AdamsMethod
 import Utils.Generators
 import Utils.EquationStorage
 import Utils.MathUtils
@@ -221,6 +233,79 @@ main = scotty 8000 $ do
         payloads <- liftIO $ processLab4AllData requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
         let response = Lab4AllResponse {lab4AllInfo = info, lab4AllPayload = payloads}
+        json response
+
+    post "/api/lab/5/lagrange" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data LagrangeMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/newton/divided/forward" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data NewtonDividedMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/newton/divided/backward" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data NewtonDividedBackwardMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/newton/forward" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data NewtonFiniteMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/newton/backward" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data NewtonBackwardMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/stirling" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data StirlingMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    post "/api/lab/5/bessel" $ do
+        requestData <- jsonData :: ActionM Lab5InputData
+        payload <- liftIO $ processLab5Data BesselMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab5Response {lab5Info = info, lab5Payload = payload}
+        json response
+
+    get "/api/lab/6/equations" $ do
+        json getOdeList
+
+    post "/api/lab/6/euler" $ do
+        requestData <- jsonData :: ActionM Lab6InputData
+        payload <- liftIO $ processLab6Data EulerMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab6Response {lab6Info = info, lab6Payload = payload}
+        json response
+
+    post "/api/lab/6/rungekutta" $ do
+        requestData <- jsonData :: ActionM Lab6InputData
+        payload <- liftIO $ processLab6Data RungeKuttaMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab6Response {lab6Info = info, lab6Payload = payload}
+        json response
+
+    post "/api/lab/6/adams" $ do
+        requestData <- jsonData :: ActionM Lab6InputData
+        payload <- liftIO $ processLab6Data AdamsMethod requestData
+        let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
+        let response = Lab6Response {lab6Info = info, lab6Payload = payload}
         json response
 
     get "/api/health/check" $ do

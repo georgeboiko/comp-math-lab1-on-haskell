@@ -2,7 +2,8 @@
 module Types.RequestTypes (Lab1InputData(..), Lab1GenerateData(..),
     Lab2InputEquationData(..), Lab2InputSystemData(..),
     Lab3InputIntegralData(..),
-    Lab4InputData(..)) where
+    Lab4InputData(..), Lab5InputData(..),
+    Lab6InputData(..)) where
 import Data.Aeson (FromJSON)
 import Types.MathTypes
 import GHC.Generics (Generic)
@@ -55,3 +56,21 @@ data Lab4InputData = Lab4InputData
     } deriving (Show, Generic)
 
 instance FromJSON Lab4InputData
+
+data Lab5InputData = Lab5InputData
+    { lab5Points :: [(Double, Double)]
+    , lab5X      :: Double
+    } deriving (Show, Generic)
+
+instance FromJSON Lab5InputData
+
+data Lab6InputData = Lab6InputData
+    { lab6EquationId :: Int
+    , lab6X0         :: Double
+    , lab6Y0         :: Double
+    , lab6Xn         :: Double
+    , lab6H          :: Double
+    , lab6Eps        :: Double
+    } deriving (Show, Generic)
+
+instance FromJSON Lab6InputData
