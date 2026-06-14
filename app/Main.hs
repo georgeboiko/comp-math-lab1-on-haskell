@@ -40,6 +40,7 @@ import Methods.Lab6RungeKuttaMethod
 import Methods.Lab6AdamsMethod
 import Utils.Generators
 import Utils.EquationStorage
+import Utils.MathUtils
 
 main :: IO ()
 main = scotty 8000 $ do
@@ -157,7 +158,7 @@ main = scotty 8000 $ do
 
     post "/api/lab/3/montecarlo" $ do
         requestData <- jsonData :: ActionM Lab3InputIntegralData
-        let maxN = 1000000
+        let maxN = calculateN (lab3Eps requestData)
         randomArray <- liftIO $ generateRandomValues maxN (lab3A requestData) (lab3B requestData)
         payload <- liftIO $ processLab3IntegralData (MonteCarloMethod randomArray) requestData
         let info = Response { resStatus = "OK", resCode = 200, resMessage = "Answer was calculated successfully" }
@@ -166,7 +167,7 @@ main = scotty 8000 $ do
 
     post "/api/lab/3/russianroulette" $ do
         requestData <- jsonData :: ActionM Lab3InputIntegralData
-        let maxN = 1000000
+        let maxN = calculateN (lab3Eps requestData)
         valuesArray <- liftIO $ generateRandomValues maxN (lab3A requestData) (lab3B requestData)
         rouletteArray <- liftIO $ generateRandomValues maxN 0 1
         payload <- liftIO $ processLab3IntegralData (RussianRouletteMethod valuesArray rouletteArray) requestData
@@ -176,7 +177,7 @@ main = scotty 8000 $ do
 
     post "/api/lab/3/importancesampling" $ do
         requestData <- jsonData :: ActionM Lab3InputIntegralData
-        let maxN = 1000000
+        let maxN = calculateN (lab3Eps requestData)
         let (a, b) = (lab3A requestData, lab3B requestData)
         let currentDistribution = distribution $ getFunctionById (lab3FunctionId requestData)
         randomArray <- liftIO $ generateDistributionValues currentDistribution maxN a b
